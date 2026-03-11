@@ -1,0 +1,38 @@
+-- For each year find count of New Flights
+
+script:
+create table #business_city (
+business_date date,
+city_id int
+);
+delete from #business_city;
+insert into #business_city
+values(cast('2020-01-02' as date),3),(cast('2020-07-01' as date),7),(cast('2021-01-01' as date),3),(cast('2021-02-03' as date),19)
+,(cast('2022-12-01' as date),3),(cast('2022-12-15' as date),3),(cast('2022-02-28' as date),12);
+
+select * from #business_city;
+
+
+-- Method 1
+with cte as (
+select *, year(business_date) yr from #business_city),
+
+ok as (
+	select b.yr, b.city_id, c.yr prevyr, c.city_id previd from cte b
+	 left join cte c
+	on b.city_id = c.city_id and (b.yr) > (c.yr))
+
+select yr, count(distinct city_id) from ok
+where previd is null
+group by yr
+
+
+
+-- Method 2
+select year(business_date) yr, count(city_id) new_flights from
+(
+	select *, count(city_id) over (partition by city_id order by business_date) cnt
+	from #business_city
+) as foo
+where cnt = 1
+group by year(business_date)

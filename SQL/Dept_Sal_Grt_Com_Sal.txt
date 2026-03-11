@@ -1,0 +1,73 @@
+/*
+ Find department whose average salary is smaller than companies average salary, 
+when comparing salaries department at hand should not be considered in companies salary 
+*/
+
+create table #emp(
+emp_id int,
+emp_name varchar(20),
+department_id int,
+salary int,
+manager_id int,
+emp_age int);
+
+insert into #emp
+values
+(1, 'Ankit', 100,10000, 4, 39);
+insert into #emp
+values (2, 'Mohit', 100, 15000, 5, 48);
+insert into #emp
+values (3, 'Vikas', 100, 10000,4,37);
+insert into #emp
+values (4, 'Rohit', 100, 5000, 2, 16);
+insert into #emp
+values (5, 'Mudit', 200, 12000, 6,55);
+insert into #emp
+values (6, 'Agam', 200, 12000,2, 14);
+insert into #emp
+values (7, 'Sanjay', 200, 9000, 2,13);
+insert into #emp
+values (8, 'Ashish', 200,5000,2,12);
+insert into #emp
+values (9, 'Mukesh',300,6000,6,51);
+insert into #emp
+values (10, 'Rakesh',300,7000,6,50);
+
+select * from #emp;
+
+
+-- Method 1, N Complexity
+select department_id from
+(
+	select *, sum(salary) over () sm, count(salary) over () cnt from #emp
+) as foo
+group by department_id
+having ((max(sm) - sum(salary)) / max(cnt) - count(salary)) > avg(salary)
+
+
+
+-- Method 2 (Correlated Subquery)
+select distinct department_id from
+(
+	select *,
+	avg(salary) over (partition by department_id) dep_avg, 
+	(select avg(s.salary) from #emp s where s.department_id <> m.department_id) com_avg
+	from #emp m
+) as foo
+where dep_avg < com_avg
+
+
+
+-- Method 3 (Join)
+
+with cte as
+(
+	select department_id, avg(salary) dep_avg from #emp
+	group by department_id
+)
+
+select c.department_id from cte c
+left join #emp e
+on e.department_id <> c.department_id
+group by c.department_id
+having max(c.dep_avg) < avg(e.salary)

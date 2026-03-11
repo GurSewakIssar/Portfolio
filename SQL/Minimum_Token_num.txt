@@ -1,0 +1,31 @@
+/*
+PROBLEM STATEMENT:
+Given table contains #token taken by different customers in a tax office.
+Write a SQL query to return the lowest token number which is unique to a customer (meaning token should be allocated to just a single customer).
+*/
+
+drop table if exists #token;
+create table #token
+(
+	token_num	int,
+	customer	varchar(20)
+);
+insert into #token values(1, 'Maryam');
+insert into #token values(2, 'Rocky');
+insert into #token values(3, 'John');
+insert into #token values(3, 'John');
+insert into #token values(2, 'Arya');
+insert into #token values(1, 'Pascal');
+insert into #token values(9, 'Kate');
+insert into #token values(9, 'Ibrahim');
+insert into #token values(8, 'Lilly');
+insert into #token values(8, 'Lilly');
+insert into #token values(5, 'Shane');
+
+
+-- Solution
+select top 1 token_num
+from #token
+group by token_num
+having count(distinct customer)=1
+order by token_num;

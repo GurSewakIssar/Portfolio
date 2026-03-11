@@ -1,0 +1,41 @@
+-- Find all the Mutual Friends of each pair, in case no friends are mutual then return 0 for each such pair.
+
+
+DROP TABLE IF EXISTS #Friends;
+
+CREATE TABLE #Friends
+(
+	Friend1 	VARCHAR(10),
+	Friend2 	VARCHAR(10)
+);
+INSERT INTO #Friends VALUES ('Jason','Mary');
+INSERT INTO #Friends VALUES ('Mike','Mary');
+INSERT INTO #Friends VALUES ('Mike','Jason');
+INSERT INTO #Friends VALUES ('Susan','Jason');
+INSERT INTO #Friends VALUES ('John','Mary');
+INSERT INTO #Friends VALUES ('Susan','Mary');
+
+select * from #Friends;
+
+-- Solution
+
+with cte as
+(
+	select friend1 from #friends
+	union 
+	select friend2 from #friends
+),
+joined as
+(
+	select u.Friend1, case when u.Friend1 like f.Friend1 then f.Friend2 else f.Friend1 end Friend2
+	from cte u
+	join #friends f
+	on u.Friend1 = f.Friend1 or u.Friend1 = f.Friend2
+)
+select f.Friend1, f.Friend2, count(jj.friend2) Mutual_Friends
+from #friends f
+left join joined j
+on f.Friend1 = j.Friend1
+left join joined jj
+on f.Friend2 = jj.Friend1 and jj.friend2 = j.Friend2
+group by f.friend1, f.Friend2

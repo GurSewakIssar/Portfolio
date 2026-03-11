@@ -1,0 +1,26 @@
+-- For each city available in data return all the players in lexical order
+
+
+create table #players_location
+(
+name varchar(20),
+city varchar(20)
+);
+delete from #players_location;
+insert into #players_location
+values ('Sachin','Mumbai'),('Virat','Delhi') , ('Rahul','Bangalore'),('Rohit','Mumbai'),('Mayank','Bangalore');
+
+select * from #players_location;
+
+
+-- Method 1, very TRICKY
+
+select max(Mumbai) Mumbai, max(Delhi) Delhi, max(Bangalore) Bangalore from 
+(
+	select *, row_number() over (partition by city order by name) rnm, 
+	case when city like 'Mumbai' then name end Mumbai,
+	case when city like 'Delhi' then name end Delhi,
+	case when city like 'Bangalore' then name end Bangalore
+	from #players_location
+) as foo
+group by rnm;

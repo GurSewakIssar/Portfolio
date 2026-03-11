@@ -1,0 +1,56 @@
+-- Fill down the Category
+
+
+script:
+create table #brands 
+(
+category varchar(20),
+brand_name varchar(20)
+);
+
+insert into #brands values
+('chocolates','5-star')
+,(null,'dairy milk')
+,(null,'perk')
+,(null,'eclair')
+,('Biscuits','britannia')
+,(null,'good day')
+,(null,'boost');
+
+select * from #brands;
+
+
+-- Method 1
+select case when grp = 1 then 'chocolates' else 'biscuits' end category, brand_name
+from 
+(
+	select *,sum(flag) over (order by rnk) grp  
+	from 
+	(
+		select *, case when category is not null then 1 else 0 end flag,
+		row_number() over (order by (select null)) rnk
+		from #brands b
+	) b
+)c;
+
+
+
+-- Method 2
+with cte as 
+(
+	select *, row_number() over (order by (select null)) rnm from #brands
+),
+cat as
+(
+	select category, rnm grp, row_number() over (order by rnm) rnm from cte
+	where category is not null
+),
+grp as
+(
+	select c.category, c.grp [start], coalesce(cc.grp, c.grp+1000) [end] from cat c
+	left join cat cc
+	on c.rnm+1 = cc.rnm
+)
+select grp.category, cte.brand_name from cte
+join grp
+on cte.rnm>=grp.[start] and cte.rnm<grp.[end]

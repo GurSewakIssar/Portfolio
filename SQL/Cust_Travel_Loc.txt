@@ -1,0 +1,65 @@
+-- Find Start location and End location of each customer
+
+CREATE TABLE #travel_data (
+    customer VARCHAR(10),
+    start_loc VARCHAR(50),
+    end_loc VARCHAR(50)
+);
+
+INSERT INTO #travel_data (customer, start_loc, end_loc) VALUES
+    ('c1', 'New York', 'Lima'),
+    ('c1', 'London', 'New York'),
+    ('c1', 'Lima', 'Sao Paulo'),
+    ('c1', 'Sao Paulo', 'New Delhi'),
+    ('c2', 'Mumbai', 'Hyderabad'),
+    ('c2', 'Surat', 'Pune'),
+    ('c2', 'Hyderabad', 'Surat'),
+    ('c3', 'Kochi', 'Kurnool'),
+    ('c3', 'Lucknow', 'Agra'),
+    ('c3', 'Agra', 'Jaipur'),
+    ('c3', 'Jaipur', 'Kochi');
+
+
+
+-- Method 1, Most Efficient:
+select customer, max([start]) [start], max([end]) [end] from
+(
+	select *, 
+	case when count(start_loc) over (partition by start_loc) = 1 and loc like 'Start' then start_loc end [start],
+	case when count(start_loc) over (partition by start_loc) = 1 and loc like 'End' then start_loc end [end]
+	from
+	(
+		select customer, start_loc, 'Start' loc from #travel_data
+		union all
+		select customer, end_loc, 'End' loc from #travel_data
+	) as foo
+) as foo2
+group by customer
+
+
+
+-- Method 2
+select t.customer, max(case when tt.customer is null then t.start_loc end) start_loc_,
+max(case when ttt.customer is null then t.end_loc end) end_loc_ 
+from #travel_data t
+left join #travel_data tt 
+on t.customer = tt.customer and 
+t.start_loc = tt.end_loc 
+left join #traveL_data ttt
+on t.customer = ttt.customer and 
+t.end_loc = ttt.start_loc
+group by t.customer;
+
+
+
+-- Method 3
+select customer, max(start_) start_loc, max(end_) end_loc from
+(
+	select *, 
+	(select case when count(*) = 0 then m.start_loc else null end 
+		from #travel_data s where m.customer = s.customer and m.start_loc = s.end_loc) start_,
+	(select case when count(*) = 0 then m.end_loc else null end
+		from #travel_data s where m.customer = s.customer and m.end_loc = s.start_loc) end_
+	from #travel_data m
+) as foo
+group by customer;

@@ -1,0 +1,42 @@
+/*
+ For each month return price of first day of the month or if it is not present then return most recent price from last month
+*/
+
+create table #sku 
+(
+sku_id int,
+price_date date ,
+price int
+);
+delete from #sku;
+insert into #sku values 
+(1,'2023-01-01',10)
+,(1,'2023-02-15',15)
+,(1,'2023-03-03',18)
+,(1,'2023-03-27',15)
+,(1,'2023-04-06',20)
+
+select * from #sku;
+
+
+-- Method 1:
+
+declare @dt as date = (select max(price_date) from #sku)
+
+select datefromparts(year(price_date), month(price_date), 1) price_date, fp as start_price, 
+fp - coalesce(lag(fp,1) over (order by price_date), fp) diff
+from
+(
+	select price_date, case when flag = 1 then price else coalesce(lag(price,1) over (order by price_date),
+	price) end fp, row_number() over (partition by left(price_date,7) order by price_date) rnm
+	from
+	(
+		select sku_id, price_date,price, case when day(price_date) = 1 then 1 end flag,
+		row_number() over (partition by left(price_date,7) order by price_date desc) rnk
+		from #sku
+		union all
+		select 1,datefromparts(year(@dt), month(@dt)+1, 2),0,0,1
+	) as foo
+	where rnk=1 or flag =1
+) as foo2
+where rnm = 1;

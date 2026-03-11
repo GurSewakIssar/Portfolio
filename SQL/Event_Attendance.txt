@@ -1,0 +1,60 @@
+-- Find out the employees who attended all company events
+
+drop table if exists #employees;
+create table #employees
+(
+	id			int,
+	name		varchar(50)
+);
+insert into #employees values(1, 'Lewis');
+insert into #employees values(2, 'Max');
+insert into #employees values(3, 'Charles');
+insert into #employees values(4, 'Sainz');
+
+
+drop table if exists #events;
+create table #events
+(
+	event_name		varchar(50),
+	emp_id			int,
+	dates			date
+);
+
+insert into #events values('Product launch', 1, '01-03-2024');
+insert into #events values('Product launch', 3, '01-03-2024');
+insert into #events values('Product launch', 4, '01-03-2024');
+insert into #events values('Conference', 2, '02-03-2024');
+insert into #events values('Conference', 2, '03-03-2024');
+insert into #events values('Conference', 3, '02-03-2024');
+insert into #events values('Conference', 4, '02-03-2024');
+insert into #events values('Training', 3, '04-03-2024');
+insert into #events values('Training', 2, '04-03-2024');
+insert into #events values('Training', 4, '04-03-2024');
+insert into #events values('Training', 4, '05-03-2024');
+
+
+select * from #employees;
+select * from #events;
+
+
+-- Solution
+
+with cte as
+(
+	select  event_name, emp_id, 
+	case when lag(event_name,1) over (order by (select null)) = event_name then 0 else 1 end dist_grps,
+	count(emp_id) over (partition by emp_id) attend_cnt
+	from #events
+	group by event_name, emp_id
+),
+flag as
+(
+	select event_name, emp_id, 
+	case when attend_cnt = sum(dist_grps) over () then 1 else 0 end flag
+	from cte
+) 
+select e.name, sum(flag) event_attended_count from flag f
+join #employees e
+on e.id = f.emp_id
+where flag = 1
+group by e.name

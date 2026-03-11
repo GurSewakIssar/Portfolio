@@ -1,0 +1,78 @@
+-- Get distribution of % of total games with no interaction, oneside interaction, both side interaction without custom msgs
+-- and both side interaction with atleast one side custom msgs
+
+CREATE TABLE #user_interactions (
+    user_id varchar(10),
+    event varchar(15),
+    event_date DATE,
+    interaction_type varchar(15),
+    game_id varchar(10),
+    event_time TIME
+);
+
+-- Insert the data
+INSERT INTO #user_interactions 
+VALUES
+('abc', 'game_start', '2024-01-01', null, 'ab0000', '10:00:00'),
+('def', 'game_start', '2024-01-01', null, 'ab0000', '10:00:00'),
+('def', 'send_emoji', '2024-01-01', 'emoji1', 'ab0000', '10:03:20'),
+('def', 'send_message', '2024-01-01', 'preloaded_quick', 'ab0000', '10:03:49'),
+('abc', 'send_gift', '2024-01-01', 'gift1', 'ab0000', '10:04:40'),
+('abc', 'game_end', '2024-01-01', NULL, 'ab0000', '10:10:00'),
+('def', 'game_end', '2024-01-01', NULL, 'ab0000', '10:10:00'),
+('abc', 'game_start', '2024-01-01', null, 'ab9999', '10:00:00'),
+('def', 'game_start', '2024-01-01', null, 'ab9999', '10:00:00'),
+('abc', 'send_message', '2024-01-01', 'custom_typed', 'ab9999', '10:02:43'),
+('abc', 'send_gift', '2024-01-01', 'gift1', 'ab9999', '10:04:40'),
+('abc', 'game_end', '2024-01-01', NULL, 'ab9999', '10:10:00'),
+('def', 'game_end', '2024-01-01', NULL, 'ab9999', '10:10:00'),
+('abc', 'game_start', '2024-01-01', null, 'ab1111', '10:00:00'),
+('def', 'game_start', '2024-01-01', null, 'ab1111', '10:00:00'),
+('abc', 'game_end', '2024-01-01', NULL, 'ab1111', '10:10:00'),
+('def', 'game_end', '2024-01-01', NULL, 'ab1111', '10:10:00'),
+('abc', 'game_start', '2024-01-01', null, 'ab1234', '10:00:00'),
+('def', 'game_start', '2024-01-01', null, 'ab1234', '10:00:00'),
+('abc', 'send_message', '2024-01-01', 'custom_typed', 'ab1234', '10:02:43'),
+('def', 'send_emoji', '2024-01-01', 'emoji1', 'ab1234', '10:03:20'),
+('def', 'send_message', '2024-01-01', 'preloaded_quick', 'ab1234', '10:03:49'),
+('abc', 'send_gift', '2024-01-01', 'gift1', 'ab1234', '10:04:40'),
+('abc', 'game_end', '2024-01-01', NULL, 'ab1234', '10:10:00'),
+('def', 'game_end', '2024-01-01', NULL, 'ab1234', '10:10:00');
+
+
+-- Solution
+with cte as
+(
+	select *, dense_rank() over (partition by game_id order by user_id) grp
+	from #user_interactions
+), 
+unioned as
+(
+	select * from cte where grp = 1
+	union all
+	select * from cte where grp = 2
+),
+users as
+(
+	select *, case when grp = 1 and interaction_type is not null and interaction_type not like 'custom_typed' then 1 else 0 end it1,
+	case when grp = 2 and interaction_type is not null and interaction_type not like 'custom_typed' then 1 else 0 end it2,
+	case when grp = 1 and interaction_type is not null and interaction_type like 'custom_typed' then 1 else 0 end ct1,
+	case when grp = 2 and interaction_type is not null and interaction_type like 'custom_typed' then 1 else 0 end ct2
+	from unioned
+),
+grouped as
+(
+	select game_id, sum(it1) it1, sum(it2) it2, sum(ct1) ct1, sum(ct2) ct2
+	from users
+	group by game_id
+), 
+msgs as
+(
+	select game_id, case when it1>0 and it2>0 and (ct1>0 or ct2>0) then 'Both_With_Custom' else
+	case when it1>0 and it2>0 and ct1=0 and ct2=0 then 'Both_Without_Custom' else
+	case when (it1>0 or it2>0) then 'OneSide' else 'NoInteraction' end end end [type],
+	count(*) over () cnt from grouped
+)
+select [type], (count([type])*1./ max(cnt))*100 percentage
+from msgs
+group by [type];

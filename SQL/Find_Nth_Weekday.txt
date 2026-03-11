@@ -1,0 +1,10 @@
+-- Find Nth sunday from a given date
+
+
+-- Finding next Sunday from today
+
+declare @given_date as date = (select sysdatetime())
+declare @weekday as int = 1 -- 1 to 7, Sunday to Saturday
+declare @n as int = 1 --for Sunday, 1 means next sunday, 2 means Sunday after next Sunday
+
+select dateadd(d,@n*7 + @weekday - datepart(dw,@given_date) , @given_date) [next_date]

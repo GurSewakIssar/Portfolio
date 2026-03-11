@@ -1,0 +1,48 @@
+-- find all 3 or more consecutive dates when no_of_people>99
+
+script:
+create table #stadium (
+id int,
+visit_date date,
+no_of_people int
+);
+
+insert into #stadium
+values (1,'2017-07-01',10)
+,(2,'2017-07-02',109)
+,(3,'2017-07-03',150)
+,(4,'2017-07-04',99)
+,(5,'2017-07-05',145)
+,(6,'2017-07-06',1455)
+,(7,'2017-07-07',199)
+,(8,'2017-07-08',188);
+
+
+-- Solution
+
+declare @days as int
+set @days = 3;
+with cte as
+(
+    select *, id -row_number() over (order by visit_date) rn from
+    (
+        select * from #stadium
+        where no_of_people >99
+    )b
+),
+
+ok as 
+(
+    select rn, count(rn) cnt from cte
+    group by rn
+    having count(rn) >=  @days
+),
+
+final as
+(
+    select c.* from cte c
+    join ok o
+    on c.rn = o.rn
+)
+
+select * from final

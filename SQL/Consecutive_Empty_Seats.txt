@@ -1,0 +1,64 @@
+-- Find three or more consecutively empty seats
+
+create table #bms (seat_no int ,is_empty varchar(10));
+insert into #bms values
+(1,'N')
+,(2,'Y')
+,(3,'N')
+,(4,'Y')
+,(5,'Y')
+,(6,'Y')
+,(7,'N')
+,(8,'Y')
+,(9,'Y')
+,(10,'Y')
+,(11,'Y')
+,(12,'N')
+,(13,'Y')
+,(14,'Y');
+
+
+-- Method 1
+select * from(
+select *,
+case when is_empty = 'Y' and lag(is_empty,1) over (order by seat_no) = 'y' and lead(is_empty,1) over (order by seat_no) = 'y' then is_empty 
+when is_empty = 'Y' and lag(is_empty,1) over (order by seat_no) = 'y' and lag(is_empty,2) over (order by seat_no) = 'y' then is_empty 
+when is_empty = 'Y' and lead(is_empty,1) over (order by seat_no) = 'y' and lead(is_empty,2) over (order by seat_no) = 'y' then is_empty
+else 'timewaste' end cndn from #bms
+) a
+where cndn = 'y'
+
+
+-- Method 2
+
+with cte as (
+	select seat_no, is_empty, case when is_empty = 'y' then 1 else 0 end cndn from #bms),
+
+run_sum as (
+	select *, row_number() over (partition by cndn,is_empty order by seat_no) run_sum from cte),
+
+zero_terminator as (
+	select seat_no,is_empty, case when cndn =0 then 0 else run_sum end finalgrp from run_sum),
+
+sub as (
+	select seat_no, is_empty, case when is_empty = 'n' then null else seat_no-finalgrp end sub from zero_terminator),
+
+cndn as (
+	select sub, count(sub) cnt from sub
+	group by sub
+	having count(sub)>=3)
+select * from sub
+where sub in (select sub from cndn)
+
+
+-- above query with 'n' removed , improved
+with cte as(
+	select *, seat_no - row_number() over (order by seat_no) rw from #bms
+	where is_empty <> 'N'),
+main as (
+	select rw, count(rw) cnt from cte
+	group by rw
+	having count(rw)>2)
+
+select * from cte
+where rw in (select rw from main)

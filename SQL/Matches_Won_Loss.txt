@@ -1,0 +1,45 @@
+-- Find for each team, Matches played, won and lost
+
+create table #icc_world_cup
+(
+Team_1 Varchar(20),
+Team_2 Varchar(20),
+Winner Varchar(20)
+);
+INSERT INTO #icc_world_cup values('India','SL','India');
+INSERT INTO #icc_world_cup values('SL','Aus','Aus');
+INSERT INTO #icc_world_cup values('SA','Eng','Eng');
+INSERT INTO #icc_world_cup values('Eng','NZ','NZ');
+INSERT INTO #icc_world_cup values('Aus','India','India');
+
+select * from #icc_world_cup;
+
+
+-- Method 1
+with cte as
+(
+	select Team_1, case when Team_1 = Winner then 1 else 0 end flag from #icc_world_cup
+	union all
+	select Team_2, case when Team_2 = Winner then 1 else 0 end flag  from #icc_world_cup
+)
+select team_1, count(team_1) tot_played, sum(flag) won, sum(case when flag = 0 then 1 else 0 end) lost from cte
+group by team_1;
+
+
+-- Method 2
+
+with cte as
+(
+	select winner, count(winner) over (partition by winner) wcount,
+	case when winner like Team_1 then Team_2 else Team_1 end loser
+	from #icc_world_cup
+),
+unioned as
+(
+	select winner, wcount from cte
+	union all
+	select loser, 0 from cte
+)
+select winner,count(winner) tot_played, max(wcount) won, count(winner)-max(wcount) lost
+from unioned 
+group by winner

@@ -1,0 +1,64 @@
+/*
+For each candidate, find their most, second and thirds most successfull state with their count in separate columns.
+count of state must be inside parenthesis. For example, California (5)
+In case of tie, present states in lexical order separated by comma. For example, California (5), Alabama (5)
+*/ 
+
+drop table if exists #candidates_tab;
+create table #candidates_tab
+(
+    id          int,
+    first_name  varchar(50),
+    last_name   varchar(50)
+);
+insert into #candidates_tab values(1, 'Davide', 'Kentish');
+insert into #candidates_tab values(2, 'Thorstein', 'Bridge');
+
+drop table if exists #results_tab;
+create table #results_tab
+(
+    candidate_id    int,
+    state           varchar(50)
+);
+insert into #results_tab values(1, 'Alabama');
+insert into #results_tab values(1, 'Alabama');
+insert into #results_tab values(1, 'California');
+insert into #results_tab values(1, 'California');
+insert into #results_tab values(1, 'California');
+insert into #results_tab values(1, 'California');
+insert into #results_tab values(1, 'California');
+insert into #results_tab values(2, 'California');
+insert into #results_tab values(2, 'California');
+insert into #results_tab values(2, 'New York');
+insert into #results_tab values(2, 'New York');
+insert into #results_tab values(2, 'Texas');
+insert into #results_tab values(2, 'Texas');
+insert into #results_tab values(2, 'Texas');
+
+insert into #results_tab values(1, 'New York');
+insert into #results_tab values(1, 'Texas');
+insert into #results_tab values(1, 'Texas');
+insert into #results_tab values(1, 'Texas');
+insert into #results_tab values(2, 'California');
+insert into #results_tab values(2, 'Alabama');
+
+select * from #candidates_tab;
+select * from #results_tab;
+
+
+-- 
+
+select concat(max(first_name), ' ', max(last_name)) [Name],
+string_agg(case when rnk=1 then concat(state, ' (', cast(cnt as varchar(max)), ')') end, ', ') within group (order by state) First_,
+string_agg(case when rnk=2 then concat(state, ' (', cast(cnt as varchar(max)), ')') end, ', ') within group (order by state) Second_,
+string_agg(case when rnk=3 then concat(state, ' (', cast(cnt as varchar(max)), ')') end, ', ') within group (order by state) Third_
+from
+(
+select r.candidate_id, c.first_name, c.last_name, r.state,
+dense_rank() over (partition by candidate_id order by count(state) desc) rnk, count(state) cnt
+from #results_tab r
+join #candidates_tab c
+on c.id = r.candidate_id
+group by r.candidate_id, c.first_name, c.last_name, r.state
+) as foo
+group by candidate_id

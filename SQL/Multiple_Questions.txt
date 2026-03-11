@@ -1,0 +1,44 @@
+CREATE table #activity
+(
+user_id varchar(20),
+event_name varchar(20),
+event_date date,
+country varchar(20)
+);
+delete from #activity;
+insert into #activity values (1,'app-installed','2022-01-01','India')
+,(1,'app-purchase','2022-01-02','India')
+,(2,'app-installed','2022-01-01','USA')
+,(3,'app-installed','2022-01-01','USA')
+,(3,'app-purchase','2022-01-03','USA')
+,(4,'app-installed','2022-01-03','India')
+,(4,'app-purchase','2022-01-03','India')
+,(5,'app-installed','2022-01-03','SL')
+,(5,'app-purchase','2022-01-03','SL')
+,(6,'app-installed','2022-01-04','Pakistan')
+,(6,'app-purchase','2022-01-04','Pakistan');
+
+
+-- Find all the #users who installed and purchased app same day for each date
+
+select a.event_date,count(distinct(b.user_id))first_day_purchase_usrs from #activity a
+left join #activity b
+on a.user_id = b.user_id and a.event_date = b.event_date and a.event_name <> b.event_name
+group by a.event_date
+
+
+-- Show percentage of #users who bought app country wise , if it is any country other than India and USA then show them as others
+
+select country_, round(cast(sum(purchase) as float)/ cast((select count(distinct(user_id)) from #activity where event_name = 'app-purchase') as float), 2)*100 percent_sub from
+(select *, case when country not in  ('India' , 'USA') then 'Others' else country end country_,
+case when event_name = 'app-purchase' then 1 else 0 end purchase
+from #activity) a
+group by country_
+
+
+-- Find date wise, #users count who Installed the app and purchased the app very next day.
+
+select b.event_date, count(distinct(a.user_id)) n_#users_who_bought_app_next_day from #activity a
+right join #activity b
+on a.user_id = b.user_id and a.event_name <> b.event_name and dateadd(d,1, a.event_date)=  b.event_date
+group by b.event_date

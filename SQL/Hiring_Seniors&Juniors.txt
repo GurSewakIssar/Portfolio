@@ -1,0 +1,52 @@
+-- You have 70k budget, from this you have to hire all the senior with lowest salary and remaining should be junior with lowest salary.
+-- till budget is reached
+
+
+script:
+create table #candidates (
+emp_id int,
+experience varchar(20),
+salary int
+);
+delete from #candidates;
+insert into #candidates values
+(1,'Junior',10000),(2,'Junior',15000),(3,'Junior',40000),(4,'Senior',16000),(5,'Senior',20000),(6,'Senior',50000);
+
+select * from #candidates;
+
+
+-- Method 1
+
+with cte as 
+	(
+	select *, sum(salary) over (partition by experience order by salary) run_sum from #candidates
+	),
+
+kick as	
+	(
+	select * from cte
+	where run_sum <70000
+	),
+
+final as
+	(
+	select *,sum(salary) over (order by experience desc, run_sum) ok from kick 
+	)
+
+select * from final
+where ok <70000
+
+
+
+-- Method 2
+
+select emp_id, experience, salary from 
+(
+	select *, sum(salary) over (order by experience desc, salary) sm2 from
+	(
+		select *, case when experience like 'Senior' then sum(salary) over (order by experience desc, salary) else 0 end sm
+		from #candidates
+	) as foo
+	where sm<70000
+) as foo
+where sm2 < 70000

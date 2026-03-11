@@ -1,0 +1,32 @@
+/*
+Find length of comma seperated values in items fields
+Example: 
+
+id, lengths
+1, 2,3,4
+2, 0,1,1,4
+
+*/
+
+drop table if exists #item;
+create table #item
+(
+	id		int,
+	items	varchar(50)
+);
+insert into #item values(1, '22,122,1022');
+insert into #item values(2, ',6,0,9999');
+insert into #item values(3, '100,2000,2');
+insert into #item values(4, '4,44,444,4444');
+
+
+select id, string_agg(chars, ' ,') within group (order by rnm) lengths
+from
+(
+	select *, len(value) chars,
+	row_number() over (partition by id order by (select null)) rnm
+	from #item
+	cross apply string_split(items, ',')
+) as foo
+group by id;
+

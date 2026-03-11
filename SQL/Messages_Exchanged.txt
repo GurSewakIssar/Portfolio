@@ -1,0 +1,35 @@
+-- Find the number of msgs exchanged between each individuals
+
+
+CREATE TABLE #subscriber (
+ sms_date date ,
+ sender varchar(20) ,
+ receiver varchar(20) ,
+ sms_no int
+);
+-- insert some values
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Avinash', 'Vibhor',10);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Vibhor', 'Avinash',20);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Avinash', 'Pawan',30);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Pawan', 'Avinash',20);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Vibhor', 'Pawan',5);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Pawan', 'Vibhor',8);
+INSERT INTO #subscriber VALUES ('2020-4-1', 'Vibhor', 'Deepak',50);
+
+select * from #subscriber
+
+-- Method 1
+select sms_date,#users, max(sender) frst, min(receiver) second , sum(sms_no) #sms from 
+	(
+	select *, case when sender > receiver then sender+'-'+receiver else receiver+'-'+sender end #users from #subscriber
+	) a
+group by sms_date, #users
+
+
+
+-- Method 2
+select case when sender < receiver then sender else receiver end sender,
+case when sender > receiver then sender else receiver end receiver, sum(sms_no) [Msgs_Exchanged]
+from #subscriber
+group by case when sender < receiver then sender else receiver end ,
+case when sender > receiver then sender else receiver end 

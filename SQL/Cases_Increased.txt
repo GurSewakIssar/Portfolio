@@ -1,0 +1,66 @@
+-- Given table contains reported covid cases in 2020. 
+-- Calculate the percentage increase in covid cases each month versus cumulative cases as of the prior month.
+-- Return the month number, and the percentage increase rounded to one decimal. Order the result by the month.
+
+drop table if exists #covid_cases;
+create table #covid_cases
+(
+	cases_reported	int,
+	dates			date	
+);
+set dateformat dmy
+insert into #covid_cases values(20124,cast('10/01/2020' as date));
+insert into #covid_cases values(40133,cast('15/01/2020' as date));
+insert into #covid_cases values(65005,cast('20/01/2020' as date));
+insert into #covid_cases values(30005,cast('08/02/2020' as date));
+insert into #covid_cases values(35015,cast('19/02/2020' as date));
+insert into #covid_cases values(15015,cast('03/03/2020' as date));
+insert into #covid_cases values(35035,cast('10/03/2020' as date));
+insert into #covid_cases values(49099,cast('14/03/2020' as date));
+insert into #covid_cases values(84045,cast('20/03/2020' as date));
+insert into #covid_cases values(100106,cast('31/03/2020' as date));
+insert into #covid_cases values(17015,cast('04/04/2020' as date));
+insert into #covid_cases values(36035,cast('11/04/2020' as date));
+insert into #covid_cases values(50099,cast('13/04/2020' as date));
+insert into #covid_cases values(87045,cast('22/04/2020' as date));
+insert into #covid_cases values(101101,cast('30/04/2020' as date));
+insert into #covid_cases values(40015,cast('01/05/2020' as date));
+insert into #covid_cases values(54035,cast('09/05/2020' as date));
+insert into #covid_cases values(71099,cast('14/05/2020' as date));
+insert into #covid_cases values(82045,cast('21/05/2020' as date));
+insert into #covid_cases values(90103,cast('25/05/2020' as date));
+insert into #covid_cases values(99103,cast('31/05/2020' as date));
+insert into #covid_cases values(11015,cast('03/06/2020' as date));
+insert into #covid_cases values(28035,cast('10/06/2020' as date));
+insert into #covid_cases values(38099,cast('14/06/2020' as date));
+insert into #covid_cases values(45045,cast('20/06/2020' as date));
+insert into #covid_cases values(36033,cast('09/07/2020' as date));
+insert into #covid_cases values(40011,cast('23/07/2020' as date));	
+insert into #covid_cases values(25001,cast('12/08/2020' as date));
+insert into #covid_cases values(29990,cast('26/08/2020' as date));	
+insert into #covid_cases values(20112,cast('04/09/2020' as date));	
+insert into #covid_cases values(43991,cast('18/09/2020' as date));	
+insert into #covid_cases values(51002,cast('29/09/2020' as date));	
+insert into #covid_cases values(26587,cast('25/10/2020' as date));	
+insert into #covid_cases values(11000,cast('07/11/2020' as date));	
+insert into #covid_cases values(35002,cast('16/11/2020' as date));	
+insert into #covid_cases values(56010,cast('28/11/2020' as date));	
+insert into #covid_cases values(15099,cast('02/12/2020' as date));	
+insert into #covid_cases values(38042,cast('11/12/2020' as date));	
+insert into #covid_cases values(73030,cast('26/12/2020' as date));	
+
+
+-- Dynamic Solution ( Work for every year )
+
+with cte as
+(
+	select year(dates)*100+month(dates) [month], sum(cases_reported) cr
+	from #covid_cases
+	group by year(dates)*100+month(dates)
+)
+select *, case when [month]=202001 then '-' else
+cast(
+cast(round((cr*1. / 
+sum(cr) over (order by month rows between unbounded preceding and 1 preceding))*100,2) as decimal(6,1))
+as varchar(max))end Percentage_Changed
+from cte

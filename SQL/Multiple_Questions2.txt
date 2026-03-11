@@ -1,0 +1,87 @@
+CREATE TABLE [#students](
+ [studentid] [int] NULL,
+ [studentname] [nvarchar](255) NULL,
+ [subject] [nvarchar](255) NULL,
+ [marks] [int] NULL,
+ [testid] [int] NULL,
+ [testdate] [date] NULL
+)
+
+insert into #students values (2,'Max Ruin','Subject1',63,1,'2022-01-02');
+insert into #students values (3,'Arnold','Subject1',95,1,'2022-01-02');
+insert into #students values (4,'Krish Star','Subject1',61,1,'2022-01-02');
+insert into #students values (5,'John Mike','Subject1',91,1,'2022-01-02');
+insert into #students values (4,'Krish Star','Subject2',71,1,'2022-01-02');
+insert into #students values (3,'Arnold','Subject2',32,1,'2022-01-02');
+insert into #students values (5,'John Mike','Subject2',61,2,'2022-11-02');
+insert into #students values (1,'John Deo','Subject2',60,1,'2022-01-02');
+insert into #students values (2,'Max Ruin','Subject2',84,1,'2022-01-02');
+insert into #students values (2,'Max Ruin','Subject3',29,3,'2022-01-03');
+insert into #students values (5,'John Mike','Subject3',98,2,'2022-11-02');
+
+-- Find list of students who scored more than average marks of that subject
+-- Method 1
+
+select * from
+	(
+	select *, case when marks > (select avg(s.marks) from #students s where m.subject = s.subject) then 1 else 0 end flag from #students m
+	)m
+where flag=1
+
+
+-- Method 2
+select * from
+(
+	select studentname, case when marks >avg(marks) over (partition by subject) then 1 end flag
+	from #students
+) as foo
+where flag = 1
+
+-- Find ratio of #students who scored more than 90 marks in any subject
+
+select round((cast((count(distinct studentname)) as float)/ cast(( select count(distinct studentname) from #students) as float)) ,2) prcnt_above_90
+from #students
+where marks > 90;
+
+-- Find second Highest and Second lowest marks for each subject,
+-- Method 1
+
+with cte as 
+	(
+	select *,case when (select max(s.marks) from #students s where s.subject = m.subject) = marks then 1 else 0 end "max",
+			 case when (select min(s.marks) from #students s where s.subject = m.subject) = marks then 1 else 0 end "min"
+	from #students m
+	),
+
+"max" as 
+	(
+	select subject, max(marks) max_ from cte
+	where max<> 1
+	group by subject),
+
+"min" as 
+	(
+	select subject, min(marks) min_ from cte
+	where min<> 1
+	group by subject)
+
+select m.subject, m.max_, n.min_ from "max" m
+join "min" n on 
+m.subject = n.subject
+
+
+-- Method 2
+
+select subject, max(max_rnk) SecondHighest, max(min_rnk) SecondLowest from
+(
+	select *, case when dense_rank() over (partition by subject order by marks desc) = 2 then marks end max_rnk,
+	case when dense_rank() over (partition by subject order by marks) = 2 then marks end min_rnk
+	from #students
+) as foo
+group by subject
+
+-- For each student find whether their marks increase or decrease compared to their last test, IF NOT INCREASED THEN DECREASED
+select *, case when lag(marks, 1) over (partition by studentid order by studentid, testdate, subject) is null then 'First' 
+			   when lag(marks, 1) over (partition by studentid order by studentid, testdate, subject) < marks then 'inc' else 'dec' end flag
+			from #students
+order by studentId, testdate, subject;
