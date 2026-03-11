@@ -1,0 +1,102 @@
+/*
+PROBLEM STATEMENT: Given tables represent the marks scored by engineering students.
+Create a report to display the following results for each student.
+  - Student_id, Student name
+  - Total Percentage of all marks
+  - Failed subjects (must be comma seperated values in case of multiple failed subjects)
+  - Result (if percentage >= 70% then 'First Class', if >= 50% & <=70% then 'Second class', if <=50% then 'Third class' else 'Fail'.
+  			The result should be Fail if a students fails in any subject irrespective of the percentage marks)
+	
+	*** The sequence of subjects in #sutdent_marks table match with the sequential id from #subjects table.
+	*** students have the option to choose either 4 or 5 subjects only.
+*/
+
+drop table if exists #sutdent_marks;
+drop table if exists #students;
+drop table if exists #subjects;
+
+create table #students
+(
+	roll_no		varchar(20) primary key,
+	name		varchar(30)		
+);
+insert into #students values('2GR5CS011', 'Maryam');
+insert into #students values('2GR5CS012', 'Rose');
+insert into #students values('2GR5CS013', 'Alice');
+insert into #students values('2GR5CS014', 'Lilly');
+insert into #students values('2GR5CS015', 'Anna');
+insert into #students values('2GR5CS016', 'Zoya');
+
+
+create table #sutdent_marks
+(
+	student_id		varchar(20) primary key references #students(roll_no),
+	subject1		int,
+	subject2		int,
+	subject3		int,
+	subject4		int,
+	subject5		int,
+	subject6		int
+);
+insert into #sutdent_marks values('2GR5CS011', 75, NULL, 56, 69, 82, NULL);
+insert into #sutdent_marks values('2GR5CS012', 57, 46, 32, 30, NULL, NULL);
+insert into #sutdent_marks values('2GR5CS013', 40, 52, 56, NULL, 31, 40);
+insert into #sutdent_marks values('2GR5CS014', 65, 73, NULL, 81, 33, 41);
+insert into #sutdent_marks values('2GR5CS015', 98, NULL, 94, NULL, 90, 20);
+insert into #sutdent_marks values('2GR5CS016', NULL, 98, 98, 81, 84, 89);
+
+
+create table #subjects
+(
+	id				varchar(20) primary key,
+	name			varchar(30),
+	pass_marks  	int check (pass_marks>=30)
+);
+insert into #subjects values('S1', 'Mathematics', 40);
+insert into #subjects values('S2', 'Algorithms', 35);
+insert into #subjects values('S3', 'Computer Networks', 35);
+insert into #subjects values('S4', 'Data Structure', 40);
+insert into #subjects values('S5', 'Artificial Intelligence', 30);
+insert into #subjects values('S6', 'Object Oriented Programming', 35);
+
+
+select * from #students;
+select * from #sutdent_marks;
+select * from #subjects;
+
+
+-- Solution
+
+with cte as
+(
+	select student_id, col as subjects, marks
+	from
+	(
+		select * from #sutdent_marks
+	) as pt
+	unpivot
+	(
+		marks for col in 
+		([subject1], [subject2], [subject3], [subject4], [subject5], [subject6])
+	)as pt2
+),
+student_stats as
+(
+	select *, sum(marks) over (partition by student_id)*1. / count(student_id) 
+	over (partition by student_id) prcnt_marks,
+	case when marks < pass_marks then [name] end flag
+	from cte c
+	join #subjects s
+	on concat(left(c.subjects,1),right(c.subjects,1)) = s.id
+)
+select student_id, st.name,  max(prcnt_marks) marks_percentage,
+coalesce(string_agg(flag, ',') within group (order by flag), '-') Failed_subjects,
+case when count(flag) > 0 then 'Fail' else 
+case when max(prcnt_marks)>= 70 then 'First' else
+case when max(prcnt_marks)>= 50 then 'Second' else
+'Third' end end end Divison
+from student_stats s
+join #students st
+on s.student_id = st.roll_no
+group by student_id, st.name
+order by student_id

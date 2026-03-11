@@ -1,0 +1,49 @@
+-- If order_id in only table_#orders table then it means that its newly added
+-- If order_id in only table_#orders_copy table then it means that its newly deleted
+-- Return all the Newly added and deleted records only
+
+script: 
+create table tbl_#orders (
+order_id integer,
+order_date date
+);
+insert into tbl_#orders
+values (1,'2022-10-21'),(2,'2022-10-22'),
+(3,'2022-10-25'),(4,'2022-10-25');
+
+select * into tbl_#orders_copy from  tbl_#orders;
+
+select * from tbl_#orders;
+insert into tbl_#orders
+values (5,'2022-10-26'),(6,'2022-10-26');
+delete from tbl_#orders where order_id=1;
+
+select * from tbl_#orders;
+select * from tbl_#orders_copy;
+
+
+--  Method 1 
+select coalesce(new, cop) id , flag from 
+	(
+	select n.order_id as new, c.order_id cop, 
+	case when c.order_id is null then 'I' when n.order_id is null then 'D' else null end flag
+	from tbl_#orders n
+	full join tbl_#orders_copy c
+	on n.order_id = c.order_id
+	) k
+where flag is not null
+
+
+
+-- Method 2
+select order_id, flag as [status] from
+(
+	select *, case when count(order_id) over (partition by order_id order by order_date)=1 and tb like 'old' then 'I' else
+	case when count(order_id) over (partition by order_id order by order_date)=1 and tb like 'new' then 'D' end end flag from
+	(
+		select *, 'old' tb from tbl_#orders
+		union all
+		select *, 'new' tb from tbl_#orders_copy
+	) as foo
+) as foo2
+where flag is not null

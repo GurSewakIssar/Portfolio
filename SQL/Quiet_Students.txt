@@ -1,0 +1,79 @@
+-- Find students who are quiet, ie neither have min or max marks in each exam and have given atleast one exam
+
+scripts:
+drop table if exists #students;
+go
+create table #students
+(
+student_id int,
+student_name varchar(20)
+);
+insert into #students values
+(1,'Daniel'),(2,'Jade'),(3,'Stella'),(4,'Jonathan'),(5,'Will');
+
+drop table if exists #exams;
+go
+create table #exams
+(
+exam_id int,
+student_id int,
+score int);
+
+insert into #exams values
+(10,1,70),(10,2,80),(10,3,90),(20,1,80),(30,1,70),(30,3,80),(30,4,90),(40,1,60)
+,(40,2,70),(40,4,80);
+
+select * from #students
+select * from #exams;
+
+with cte as 
+	(
+	select exam_id, min(score) "min", max(score) "max" from #exams
+	group by exam_id
+	),
+
+ "join" as
+	(
+	select e.* from #exams e
+	join cte c
+	on c.exam_id = e.exam_id and (score<> "min" and score <> "max")
+	),
+
+"cnt" as
+	(
+	select student_id, count(*) "cnt" from #exams
+	group by student_id
+	),
+
+quietcnt as
+	(
+	select student_id, count(student_id) "cnt"  from "join" 
+	group by student_id), 
+
+final as
+	(
+	select q.* from cnt c
+	join quietcnt q
+	on q.student_id = c.student_id and q.cnt = c.cnt
+	)
+
+select s.* from final f
+join #students s
+on s.student_id = f.student_id
+
+-- Method 2
+with cte as
+(
+	select student_id from
+	(
+		select *, case when score <> max(score) over (partition by exam_id order by score desc) and 
+		score <> min(score) over (partition by exam_id order by score) then 1 end flag,
+		count(student_id) over (partition by student_id) cnt
+		from #exams
+	) as foo
+	group by student_id
+	having count(flag) = max(cnt) and count(student_id)>1
+)
+select c.student_id, s.student_name from cte c
+join #students s
+on s.student_id = c.student_id

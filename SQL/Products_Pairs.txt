@@ -1,0 +1,65 @@
+-- Find Product pairs that are purchased together
+
+drop table if exists #orders
+go
+create table #orders
+(
+order_id int,
+customer_id int,
+product_id int,
+);
+
+insert into #orders VALUES 
+(1, 1, 1),
+(1, 1, 2),
+(1, 1, 3),
+(2, 2, 1),
+(2, 2, 2),
+(2, 2, 4),
+(3, 1, 5);
+
+drop table if exists #products
+go
+create table #products (
+id int,
+name varchar(10)
+);
+insert into #products VALUES 
+(1, 'A'),
+(2, 'B'),
+(3, 'C'),
+(4, 'D'),
+(5, 'E');
+
+select * from #orders
+select * from #products;
+
+-- Method 1
+WITH cte AS (
+	SELECT O.*, P."name" FROM #orders O
+	JOIN #products P
+	ON P.id = O.product_id),
+
+combo AS (
+	SELECT *, (SELECT coalesce(string_agg(s."NAME", ','), m."name") FROM cte S WHERE S.order_id = M.order_id AND S.customer_id = M.customer_id AND S.product_id <> M.product_id
+			GROUP BY S.order_id, S.customer_id) combo FROM cte M
+	GROUP BY M.order_id, m.customer_id, m.product_id, m.name),
+
+combocount as (
+	SELECT combo, count(combo) ordercount FROM combo
+	GROUP BY combo)
+
+SELECT * FROM combocount
+order by ordercount desc;
+
+
+-- Method 2
+select concat(max(p.name), ',',min(pp.name)) category, count(p.name) [count] from #orders o
+join #orders oo 
+on o.customer_id = oo.customer_id and o.order_id = oo.order_id and 
+o.product_id< oo.product_id
+join #products p
+on p.id = o.product_id
+join #products pp
+on pp.id = oo.product_id
+group by p.name, pp.name

@@ -1,0 +1,60 @@
+-- If a company has more than 1 users that know English and German then return company id with such user count
+
+create table #company_#users 
+(
+company_id int,
+user_id int,
+language varchar(20)
+);
+
+insert into #company_#users values (1,1,'English')
+,(1,1,'German')
+,(1,2,'English')
+,(1,3,'German')
+,(1,3,'English')
+,(1,4,'English')
+,(2,5,'English')
+,(2,5,'German')
+,(2,5,'Spanish')
+,(2,6,'German')
+,(2,6,'Spanish')
+,(2,7,'English');
+
+
+-- Method 1
+with cte as (
+	SELECT a.company_id, a.user_id FROM #company_#users a
+	JOIN #company_#users b
+	on a.company_id = b.company_id and a.user_id = b.user_id and a.language <> b.language and
+	a.language = 'English' and b.language = 'German'),
+
+ok as (
+	select company_id, count(distinct user_id) ##users from cte
+	group by company_id
+	having count(distinct user_id) >1 )
+
+select * from ok
+
+
+-- Method 2
+select company_id, count(distinct user_id) [#users] 
+from 
+(
+	select company_id, user_id, count(*) over (partition by company_id) cnt from #company_#users
+	where language in ('English', 'German')
+	group by company_id, user_id
+	having count(distinct language)>1
+) as foo
+where cnt>1
+group by company_id
+
+
+-- Method 3
+select company_id, count( distinct user_id) #users from
+(
+	select * from #company_#users) pt
+	pivot (count(language) for language in ("English", "german", "spanish")
+)p
+where english = 1 and german = 1
+group by company_id
+having count(distinct user_id) >1

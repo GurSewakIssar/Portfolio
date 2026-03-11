@@ -1,0 +1,82 @@
+-- Find the users % who joined prime membership within 30 days of their first login into Music app
+
+drop  table if exists #users
+go
+create table #users
+(
+user_id integer,
+name varchar(20),
+join_date date
+);
+insert into #users
+values (1, 'Jon', CAST('2-14-20' AS date)), 
+(2, 'Jane', CAST('2-14-20' AS date)), 
+(3, 'Jill', CAST('2-15-20' AS date)), 
+(4, 'Josh', CAST('2-15-20' AS date)), 
+(5, 'Jean', CAST('2-16-20' AS date)), 
+(6, 'Justin', CAST('2-17-20' AS date)),
+(7, 'Jeremy', CAST('2-18-20' AS date));
+
+drop table if exists #events
+go
+create table #events
+(
+user_id integer,
+type varchar(10),
+access_date date
+);
+
+insert into #events values
+(1, 'Pay', CAST('3-1-20' AS date)), 
+(2, 'Music', CAST('3-2-20' AS date)), 
+(2, 'P', CAST('3-12-20' AS date)),
+(3, 'Music', CAST('3-15-20' AS date)), 
+(4, 'Music', CAST('3-15-20' AS date)), 
+(1, 'P', CAST('3-16-20' AS date)), 
+(3, 'P', CAST('3-22-20' AS date));
+
+select * from #users
+select * from #events;
+
+-- Method 1
+
+with cte as(
+	select * from #users),
+
+"login" as (
+	select c.user_id, c.name, c.join_date, e.type from cte c
+	join #events e
+	on e.user_id = c.user_id and e.type = 'music'),
+
+prime as (
+	select c.user_id, c.name, e.type , c.join_date, e.access_date from "login" c
+	join #events e
+	on e.user_id = c.user_id and e.type = 'p'),
+
+valid_#users as (
+	select *, case when datediff(d, join_date, access_date)<30 then 1 else 0 end valid  from prime),
+
+final as (
+	select round((cast(sum(valid) as numeric(3,2))/ (select cast((select count(distinct(user_id)) from #events where type = 'music') as numeric(3,2)))),2)*100. join_rate from valid_#users)
+
+select * from final
+
+-- Method 2
+
+select round((cast(sum(valid) as numeric(3,2)) / (select cast((select count(distinct(user_id)) from #events where type = 'music') as numeric(3,2)))),2)*100. from (
+select u.user_id,u.name, u.join_date,e.type music ,ee.type prime ,e.access_date, ee.access_date prime_membership,  
+case when datediff(d, join_date, ee.access_date)<30 then 1 else 0 end valid from #users u
+join #events e
+on u.user_id = e.user_id and e.type = 'music'
+join #events ee
+on ee.user_id = u.user_id and ee.type = 'P') main
+
+-- Method 3
+
+select round(cast(count(u.name)*1.0/ count(*) as numeric(3,2)),2)*100 [Users%] from #events e
+left join #events ee
+on e.user_id = ee.user_id and
+e.type like 'Music' and ee.type like 'P'
+left join #users u
+on e.user_id = u.user_id and ee.access_date <= dateadd(d, 29, u.join_date)
+where e.type like 'Music'

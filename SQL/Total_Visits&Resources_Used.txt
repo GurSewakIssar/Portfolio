@@ -1,0 +1,36 @@
+/* For each Name, find total visits, most visited floor and resources used which is a string that contains all the resources used
+separated by comma.*/
+
+
+
+create table #entries ( 
+name varchar(20),
+address varchar(20),
+email varchar(20),
+floor int,
+resources varchar(10));
+
+insert into #entries 
+values ('A','Bangalore','A@gmail.com',1,'CPU'),('A','Bangalore','A1@gmail.com',1,'CPU'),('A','Bangalore','A2@gmail.com',2,'DESKTOP')
+,('B','Bangalore','B@gmail.com',2,'DESKTOP'),('B','Bangalore','B1@gmail.com',2,'DESKTOP'),('B','Bangalore','B2@gmail.com',1,'MONITOR');
+
+select * from #entries
+
+
+-- Solution
+
+select name, max(tot_cnt) tot_visits, 
+max(flr) most_visited_floor, string_agg(resources, ',') within group(order by resources) resources_used from
+(    
+	select distinct * from
+	(
+		select name, count(name) over (partition by name) tot_cnt, 
+		first_value(floor) over (partition by name order by flr_cnt desc) flr,
+		resources 
+		from
+		(
+			select *, count(floor) over (partition by name, floor) flr_cnt from #entries
+		) as foo
+	) as foo2
+) as foo3
+group by name

@@ -1,0 +1,62 @@
+-- Find total students who got same marks in chemistry and physics
+
+create table #exams (student_id int, subject varchar(20), marks int);
+delete from #exams;
+insert into #exams values (1,'Chemistry',91),(1,'Physics',91)
+,(2,'Chemistry',80),(2,'Physics',90)
+,(3,'Chemistry',80)
+,(4,'Chemistry',71),(4,'Physics',54);
+
+select * from #exams
+
+-- method 1
+
+select sum(flag)tot_students from (
+	SELECT e.student_id, max(case when e.marks = e2.marks then 1 else 0 end) flag FROM #exams e
+	join #exams e2
+	on e.student_id = e2.student_id and e.subject <> e2.subject
+	group by e.student_id) sub;
+
+
+
+--Method 2, correlated query, Not Dynamic
+
+select student_id, max(flag) 
+from 
+(
+	select student_id, 
+	(
+		select case when count(distinct(subject)) <> count(distinct(marks)) then 1 else 0 end
+		from #exams e2 where e2.student_id = e.student_id group by e2.student_id
+	) flag
+	from #exams e 
+	where subject in ('Chemistry' , 'Physics')
+) ok
+group by student_id;
+
+
+
+-- Method 3, But Dynamic
+select sum(flag) [#Students]
+from 
+(
+	select student_id, 
+	(
+		select case when e2.subject is null then 0 else 1 end
+		from #exams e2 where e2.student_id = e.student_id and
+		e.subject <> e2.subject and e.subject > e2.subject and e.marks = e2.marks
+	) flag
+	from #exams e 
+	where subject in ('Chemistry' , 'Physics')
+) ok
+where flag is not null
+group by student_id;
+
+
+
+-- Method 4, Dynamic
+
+select count(distinct student_id) [#Students] from #exams
+where subject in ('Chemistry' , 'Physics')
+group by student_id
+having count(distinct subject)=2 and count(distinct marks) = 1

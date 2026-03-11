@@ -1,0 +1,52 @@
+-- For each TimePeriod find how many of those stocks were bought and sold
+
+Create Table #Buy (
+Date Int,
+Time Int,
+Qty Int,
+per_share_price int,
+total_value int );
+
+Create Table #sell(
+Date Int,
+Time Int,
+Qty Int,
+per_share_price int,
+total_value int );
+INSERT INTO #Buy (date, time, qty, per_share_price, total_value)
+VALUES
+(15, 10, 10, 10, 100),
+(15, 14, 20, 10, 200);
+
+INSERT INTO #sell(date, time, qty, per_share_price, total_value)
+VALUES (15, 15, 15, 20, 300);
+
+SELECT * FROM #Buy
+SELECT * FROM #sell;
+
+-- Solution
+
+with buy as
+(
+	select *, 1 n from #buy
+	union all
+	select date, time, qty, per_share_price, total_value, n+1 from buy
+	where n+1 <= qty
+),
+sell as
+(
+	select *, 1 n from #sell
+	union all
+	select date, time, qty, per_share_price, total_value, n+1 from sell
+	where n+1 <= qty
+),
+buy_rnm as
+(
+	select *,row_number() over (order by time, n) rnm from buy
+)
+select b.Date, b.time, count(b.qty) bought, count(s.qty) sold 
+from buy_rnm b
+left join sell s
+on b.rnm = s.n
+group by b.Date, b.Time, b.Qty, s.date
+order by b.date, b.time, count(s.qty) desc;

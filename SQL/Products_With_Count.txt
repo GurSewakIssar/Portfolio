@@ -1,0 +1,49 @@
+-- In output return for each customer all the products that is in their budget but as a string delimited by comma.
+
+drop table if exists #products
+create table #products
+(
+product_id varchar(20) ,
+cost int
+);
+insert into #products values ('P1',200),('P2',300),('P3',500),('P4',800);
+
+create table #customer_budget
+(
+customer_id int,
+budget int
+);
+
+insert into #customer_budget values (100,400),(200,800),(300,1500);
+
+select * from #products
+select * from #customer_budget;
+
+
+-- Method 1, 
+with cte as (
+	select *, sum(cost) over (order by cost) run_sum from #products),
+
+final as (
+	select * from cte c
+	join #customer_budget b
+	on  c.run_sum  <= b.budget
+	)
+
+select customer_id, max(budget) budget, count(distinct product_id) #prods,
+string_agg(product_id, ', ') within group (order by run_sum)
+prods from final
+group by customer_id
+order by customer_id
+
+
+
+-- Method 2
+with cte as
+(
+	select *, sum(cost) over (order by cost) run_sum from #products
+)
+select customer_id, string_agg(product_id, ',') within group (order by run_sum), count(distinct product_id) #prods 
+from #customer_budget , cte
+where budget >= run_sum
+group by customer_id

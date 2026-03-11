@@ -1,0 +1,21 @@
+-- For each consecutive state find Start and End date
+
+-- Method 1
+WITH CTE AS (
+	select *, lag(state,1) over (order by date_value)"lag",
+	case when state <> coalesce(lag(state,1) over (order by date_value), 'no') then 1 else 0 end cndn from tasks),
+
+"Sum" AS (
+	SELECT date_value, state, cndn, sum(cndn) over (order by date_value) grp FROM CTE)
+
+select state, min(date_value) "start" ,max(date_value) "end" from "Sum"
+group by state, grp
+
+-- Method 2
+
+select max(state) [state], min(date_value) [start], max(date_value) [end] from 
+(
+	select *, row_number() over (order by date_value) - row_number() over (partition by state order by date_value) grp
+	from tasks
+) as foo
+group by grp

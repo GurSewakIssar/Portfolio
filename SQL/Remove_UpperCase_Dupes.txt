@@ -1,0 +1,58 @@
+-- Remove any duplicates in email_id which are present in uppercase.
+
+
+CREATE TABLE #employees  (employee_id int,employee_name varchar(15), email_id varchar(15) );
+delete from #employees;
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('101','Liam Alton', 'li.al@abc.com');
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('102','Josh Day', 'jo.da@abc.com');
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('103','Sean Mann', 'se.ma@abc.com'); 
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('104','Evan Blake', 'ev.bl@abc.com');
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('105','Toby Scott', 'jo.da@abc.com');
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('106','Anjali Chouhan', 'JO.DA@ABC.COM');
+INSERT INTO #employees (employee_id,employee_name, email_id) VALUES ('107','Ankit Bansal', 'AN.BA@ABC.COM');
+
+ALTER TABLE #employees
+ALTER COLUMN email_id VARCHAR(15); --COLLATE Latin1_general_bin;
+
+
+-- Method 1, With No use of SQL Properties.
+with cte as
+(
+	select * ,len(email_id) ln from #employees
+),
+rec as
+(
+	select employee_id, employee_name, email_id, ln, 1 n, ascii(substring(email_id, 1, 1)) ss
+	from cte
+	union all
+	select employee_id, employee_name, email_id, ln, n+1, ascii(substring(email_id, n+1, 1)) 
+	from rec
+	where n+1<ln
+),
+final as
+(
+	select employee_id, employee_name, email_id,
+	sum(case when ss>=65 and ss<=90 then 1 else 0 end) cap,
+	count(email_id) over (partition by lower(email_id)) dupe
+	from rec
+	group by employee_id, employee_name, email_id
+)
+select * from final
+where case when cap>0 and dupe>1 then 0 else 1 end = 1
+
+
+-- Method 2, With SQL Property
+select * from
+(
+	select *, count(email_id) over (partition by lower(email_id)) cnt 
+	from #employees
+) as foo
+where case when email_id collate latin1_general_bin like '%[A-Z]%' and cnt>1 then 0 else 1 end = 1
+
+-- Method 3
+select * from
+(
+	select *, dense_rank() over (partition by lower(email_id) order by ascii(email_id) desc) cnt 
+	from #employees
+) as foo
+where cnt=1

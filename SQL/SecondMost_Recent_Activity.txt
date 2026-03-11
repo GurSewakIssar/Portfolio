@@ -1,0 +1,32 @@
+-- Return second most recent activity for each user else return their only activity
+
+create table #UserActivity
+(
+username      varchar(20) ,
+activity      varchar(20),
+startDate     Date   ,
+endDate      Date
+);
+
+insert into #UserActivity values 
+('Alice','Travel','2020-02-12','2020-02-20')
+,('Alice','Dancing','2020-02-21','2020-02-23')
+,('Alice','Travel','2020-02-24','2020-02-28')
+,('Bob','Travel','2020-02-11','2020-02-18');
+
+-- Method 1
+select * from 
+(select *,
+case when tot_act_count >1 and (act_count = (tot_act_count-1)) then 1
+when tot_act_count = 1 then 1 else 0 end flag from(
+SELECT *, count(username) over (partition by username) tot_act_count, row_number() over (partition by username order by startDate) act_count FROM #UserActivity 
+) main)main2
+where flag = 1
+
+-- Method 2, same as above but without case condition
+select * from (
+select *, count(username) over (partition by username) act_cnt,
+rank() over (partition by username order by startDate) rnk 
+from #UserActivity
+) main
+where rnk = act_cnt-1 or act_cnt = 1

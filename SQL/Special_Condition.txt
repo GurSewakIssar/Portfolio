@@ -1,0 +1,45 @@
+-- Get biggest order value and its detail for each user but we cannot use CTE, temp table, window functions and sub query.
+
+ddl:
+CREATE TABLE [dbo].[int_#orders](
+ [order_number] [int] NOT NULL,
+ [order_date] [date] NOT NULL,
+ [cust_id] [int] NOT NULL,
+ [#salesperson_id] [int] NOT NULL,
+ [amount] [float] NOT NULL
+) ON [PRIMARY];
+
+INSERT INTO [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (30, CAST('1995-07-14' AS Date), 9, 1, 460);
+
+INSERT into [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (10, CAST('1996-08-02' AS Date), 4, 2, 540);
+
+INSERT INTO [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (40, CAST('1998-01-29' AS Date), 7, 2, 2400);
+
+INSERT INTO [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (50, CAST('1998-02-03' AS Date), 6, 7, 600);
+
+INSERT into [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (60, CAST('1998-03-02' AS Date), 6, 7, 720);
+
+INSERT into [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (70, CAST('1998-05-06' AS Date), 9, 7, 150);
+
+INSERT into [dbo].[int_#orders] ([order_number], [order_date], [cust_id], [#salesperson_id], [amount]) VALUES (20, CAST('1999-01-30' AS Date), 4, 8, 1800);
+
+select * from int_#orders
+
+
+-- solution 1
+
+select a.order_number, a.order_date, a.cust_id, a.#salesperson_id, a.amount from int_#orders a
+join int_#orders b
+on a.#salesperson_id = b.#salesperson_id
+group by a.order_number, a.order_date, a.cust_id, a.#salesperson_id, a.amount
+having a.amount >= max(b.amount)
+
+
+--solution 2
+
+select o1.*
+from int_#orders o1
+left join int_#orders o2
+on o1.amount<o2.amount and o1.#salesperson_id=o2.#salesperson_id
+where o2.amount is null
+order by 1;

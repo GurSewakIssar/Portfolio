@@ -1,0 +1,32 @@
+drop table if exists #invoice;
+create table #invoice
+(
+	serial_no		int,
+	invoice_date	date
+);
+insert into #invoice values (330115, '01-Mar-2024')
+insert into #invoice values (330120, '01-Mar-2024')
+insert into #invoice values (330121, '01-Mar-2024')
+insert into #invoice values (330122, '02-Mar-2024')
+insert into #invoice values (330125, '02-Mar-2024')
+
+select * from #invoice;
+
+
+-- Solution
+
+declare @min as int = (select min(serial_no) from #invoice)
+declare @max as int = (select max(serial_no) from #invoice)
+
+declare @str as table(s varchar(max))
+insert into @str values(replicate('1,', @max-@min + 1));
+
+with cte as
+(
+	select @min + row_number() over (order by (select null))-1 sno
+	from @str
+	cross apply string_split(s, ',')
+	where value not like ''
+)
+select * from cte
+where sno not in (select distinct serial_no from #Invoice)

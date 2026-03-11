@@ -1,0 +1,37 @@
+/* 
+Print Following String as
+grp, val
+1, a1
+2, a2 , a3
+3, a4, a5, a6
+...
+*/
+
+create table #arbitrary_values (name varchar(500));
+insert into #arbitrary_values values 
+('a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21');
+
+
+--Solution
+
+with cte as
+(
+	select trim(value) string, row_number() over (order by (select null)) rnm
+	from #arbitrary_values
+	cross apply string_split(name, ',')
+),
+rec as
+(
+	select string, cast(1 as int) as rnm, 1 as grp , 1 as n
+	from cte
+	where rnm = 1
+	union all
+	select c.string, cast(c.rnm as int), case when r.n = r.grp then r.n+1 else r.grp end,
+	case when r.n=r.grp then 1 else r.n+1 end
+	from rec r
+	join cte c
+	on r.rnm+1 = c.rnm
+)
+select grp, string_agg(string, ' , ') within group (order by string) string
+from rec
+group by grp
