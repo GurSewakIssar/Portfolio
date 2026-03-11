@@ -1,0 +1,57 @@
+-- Find all the #users who bought different #products on different days such that no product is purchased previously
+
+ 
+script:
+create table #purchase_history
+(userid int
+,productid int
+,purchasedate date
+);
+SET DATEFORMAT dmy;
+insert into #purchase_history values
+(1,1,'23-01-2012')
+,(1,2,'23-01-2012')
+,(1,3,'25-01-2012')
+,(2,1,'23-01-2012')
+,(2,2,'23-01-2012')
+,(2,2,'25-01-2012')
+,(2,4,'25-01-2012')
+,(3,4,'23-01-2012')
+,(3,1,'23-01-2012')
+,(4,1,'23-01-2012')
+,(4,2,'25-01-2012')
+;
+
+select * from #purchase_history
+
+-- Method 1
+select userid from 
+	(
+	select *,
+	case when productid not in (select distinct productid from #purchase_history s where s.userid = m.userid and s.purchasedate < m.purchasedate) 
+	then 1 else 0 end flag
+	from #purchase_history m
+	) subQ
+group by userid
+having (count(userid) = sum(flag)) and (count(distinct purchasedate) >1)
+
+
+-- Method 2
+
+with cte as
+	(
+	select p.userid from #purchase_history p
+	 join #purchase_history v
+	on p.userid = v.userid and p.purchasedate < v.purchasedate and p.productid = v.productid
+	)
+
+select userid from #purchase_history
+where userid not in (select userid from cte)
+group by userid
+having count(distinct purchasedate) >1
+
+
+-- Method 3
+select userid from #purchase_history
+group by userid
+having count(userid) = count(distinct productid) and count(distinct purchasedate) >1
