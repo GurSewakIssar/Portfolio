@@ -1,0 +1,16 @@
+{
+  "RAW_DATA_PATH": ".\\data\\train.csv",
+  "CLEAN_DATA_PATH": ".\\data\\cleaned_data.csv",
+  "TEST_DATA_PATH": ".\\data\\test.csv",
+  "CORRECT_WORDS_PATH": ".\\words\\Correct_Words_Set.pkl",
+  "SAVE_MODEL_DIR": ".\\models\\",
+  "LOAD_MODEL_DIR": ".\\models\\",
+  "PREDICTION_SAVE_PATH": ".\\data\\predictions.csv",
+  "FEATURE_SELECTION_DIR": ".\\Feature_Importance\\",
+  "COUNT_VECTORIZER1_PATH": ".\\vectorizers\\cnt1_vectorizer.pkl",
+  "COUNT_VECTORIZER2_PATH": ".\\vectorizers\\cnt2_vectorizer.pkl",
+  "CLEAN_DATA_AVAILABLE": false,
+  "GET_CLEAN_DATA": false, 
+  "SAMPLE_DATA_PATH": ".\\data\\train.csv"
+
+}

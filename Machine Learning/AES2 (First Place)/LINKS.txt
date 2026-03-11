@@ -1,0 +1,4 @@
+Competition Link: https://www.kaggle.com/competitions/learning-agency-lab-automated-essay-scoring-2 
+Leaderboard Link: https://www.kaggle.com/code/inversion/automated-essay-scoring-2-0-efficiency-lb 
+
+I am at Rank 1.
