@@ -9,11 +9,11 @@ Here you will find some of my Projects and also some achievements including Top 
 | Skills                  | Soft Skills or Libraries                   |
 |------------------------:|--------------------------------------------|
 | ***SQL***                     | EDA, Problem Solving, Data Modeling. |
-| ***Python***                 | Pandas, Polars, Matplotlib, Seaborn, NumPy, SciPy, PySpark, Multiprocessing, Data Structures and many more. |
+| ***Python***                 | Pandas, Polars, Matplotlib, Seaborn, NumPy, SciPy, PySpark, Multiprocessing, Streamlit, Data Structures and many more. |
 | ***Machine Learning***        | Scikit-Learn, TensorFlow, Optuna, Huggingface, Predictive modeling, NLP, Computer Vision, Sales Forecasting and many more. |
 | ***Excel***                   | Pivot Tables, Array functions, Lookup functions, Dashboard. |
 | ***Power Bi***                | DAX, Power Query, Dashboard, M Language. |
-| Others                  | A/B Testing, Hypothesis Testing, Delta Lake, Statistics, Reduction in cost due to efficient ML pipelines and quick Inference. |
+| Others                  | A/B Testing, Hypothesis Testing, Delta Lake, Statistics, Docker. |
 
 </details>
 
