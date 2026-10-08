@@ -1,0 +1,5 @@
+1. Open Command Prompt and make sure Docker is running.
+2. Change Directory to path which contain all provided files (Example: cd path).
+3. Type docker build -t ImageName .(this period is for destination path, where we are not specifying exactly where we want it to store).
+4. Since with Step 3 we have created our docker image ImageName, now we can create and run a container with docker run -p 8501:8501 ImageName. Command -p is form port mapping (A:B) where A is our localhost port and we can change it to whatever port we like. B should not be changed as it is exposed inside dockerfile.
+5. To access Streamlit Form in our localhost, just open any browser and open http://localhost:8501/ (when local port is 8501) and our Streamlit Form will be opened.
