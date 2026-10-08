@@ -1,0 +1,32 @@
+# 11. Container With Most Water 
+
+# https://leetcode.com/problems/container-with-most-water/?envType=study-plan-v2&envId=top-interview-150 
+
+def maxArea(height):
+    
+    l = 0 
+    r = len(height) - 1 
+    lmax, rmax = height[l], height[r]
+    result = float("-inf")
+    
+    while l<r: 
+        
+        lmax = max(lmax, height[l]) 
+        rmax = max(rmax, height[r])  
+        
+        result = max(result, min(lmax, rmax) * (r - l)) 
+        
+        if height[l] > height[r]: r -= 1 
+        else: l += 1 
+        
+    return result 
+        
+height = [1,8,6,2,5,4,8,3,7] 
+maxArea(height)
+
+
+height = [1,1]
+maxArea(height)
+
+height = [1,8,6,2,66, 66, 5,4,8,3,7]
+maxArea(height)

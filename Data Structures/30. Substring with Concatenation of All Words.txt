@@ -1,0 +1,73 @@
+# 30. Substring with Concatenation of All Words 
+# https://leetcode.com/problems/substring-with-concatenation-of-all-words/?envType=study-plan-v2&envId=top-interview-150 
+
+
+def findSubstring(s, words): 
+    D = {}
+    d = {}
+    
+    for word in words: 
+        if word in D: 
+            D[word] += 1 
+            d[word] = 0
+        else: 
+            D[word] = 1
+
+    n = len(words[0])
+    counter = 0
+    l, r = 0, 0 
+    result = []
+    
+    while r < len(s): 
+        w = s[r:r+n] 
+
+        
+        if w in D:
+            if d.get(w, 0) < D[w]: 
+                if w in d: 
+                    d[w] += 1 
+                else: 
+                    d[w] = 1 
+            
+                counter += 1
+                r += n 
+            else: 
+                d = {} 
+                d[w] = 1 
+                counter = 1 
+                l = r  
+                r += n
+        
+        else: 
+            d = {} 
+            counter = 0 
+            r += n 
+            l = r 
+        
+        if counter == len(words): 
+            result.append(l) 
+            
+            d[s[l:l+n]] -= 1 
+            l += n 
+            counter -= 1 
+            
+    
+    return result
+            
+                    
+            
+s = "barfoothefoobarman" 
+words = ["foo","bar"]
+findSubstring(s, words)
+
+s = "wordgoodgoodgoodbestword" 
+words = ["word","good","best","word"]
+findSubstring(s, words)
+
+s = "barfoofoobarthefoobarman" 
+words = ["bar","foo","the"]
+findSubstring(s, words)
+            
+s = "abbcdcabbcbcabcd"
+words = ["ab", "bc", "cd"]    
+findSubstring(s, words)

@@ -1,0 +1,36 @@
+# 290. Word Pattern
+
+# https://leetcode.com/problems/word-pattern/?envType=study-plan-v2&envId=top-interview-150 
+
+def wordPattern(pattern, s): 
+    
+    d = {} 
+    l, r = 0, 0 
+    
+    while l<len(pattern) and r < len(s): 
+        k = r
+        while k < len(s) and s[k] != " ": 
+            k += 1 
+            
+        if pattern[l] not in d: 
+            d[pattern[l]] = s[r:k] 
+        else: 
+            if d[pattern[l]] != s[r:k]: return False 
+        
+        l += 1 
+        r = k + 1 
+    
+    return True 
+
+
+pattern = "abba" 
+s = "dog cat cat dog" 
+wordPattern(pattern, s)
+
+pattern = "abba" 
+s = "dog cat cat fish" 
+wordPattern(pattern, s)
+
+pattern = "aaaa" 
+s = "dog cat cat dog"
+wordPattern(pattern, s)

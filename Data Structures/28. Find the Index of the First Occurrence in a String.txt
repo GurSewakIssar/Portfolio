@@ -1,0 +1,23 @@
+# 28. Find the Index of the First Occurrence in a String 
+# https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/description/?envType=study-plan-v2&envId=top-interview-150
+
+def strStr(haystack, needle):
+    if not haystack: return -1 
+    
+    for i in range(len(haystack) - len(needle)): 
+        
+        if haystack[i: i + len(needle)] == needle: return i 
+    
+    return -1 
+
+haystack = "sadbutsad" 
+needle = "sad" 
+strStr(haystack, needle)
+
+haystack = "leetcode" 
+needle = "leeto"
+strStr(haystack, needle)
+
+haystack = "sjkjokkfjkjsl" 
+needle = "okk" 
+strStr(haystack, needle)

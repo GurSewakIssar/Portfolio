@@ -1,0 +1,66 @@
+# 76. Minimum Window Substring 
+# https://leetcode.com/problems/minimum-window-substring/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def minWindow(s, t):
+    if len(t)>len(s): return 
+    
+    D, d = {}, {}
+    for c in t: 
+        if c in D: 
+            D[c] += 1 
+        else: 
+            D[c] = 1 
+    
+    counter = 0 
+    result = None
+    l, r = 0, 0
+    
+    while r < len(s):
+        w = s[r]
+        
+        if w in D:
+            if d.get(w, 0) < D[w]: 
+                counter += 1 
+                
+            if w in d: 
+                d[w] += 1 
+            else: 
+                d[w] = 1
+        
+        if counter == len(t): 
+            
+            while l<=r and (counter>=len(t) or s[l] not in D): 
+                if counter == len(t): 
+                    if result:
+                        if len(s[l:r+1])<len(result): 
+                            result = s[l:r+1]  
+                    else: 
+                        result = s[l:r+1]
+                        
+                if d.get(s[l], 0):
+                    d[s[l]] -= 1 
+                    if d[s[l]] < D[s[l]]: 
+                        counter -= 1 
+                l += 1
+ 
+        
+        r += 1 
+
+    return result
+                   
+                
+s = "ADOBECODEBANC" 
+t = "ABC" 
+minWindow(s, t)
+
+s = "a" 
+t = "a"
+minWindow(s, t)
+
+s = "a" 
+t = "aa"
+minWindow(s, t)           
+
+s = "abcdoitoda" 
+t = "adot" 
+minWindow(s, t) 

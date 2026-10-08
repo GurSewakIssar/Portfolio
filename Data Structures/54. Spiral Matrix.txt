@@ -1,0 +1,68 @@
+# 54. Spiral Matrix 
+
+# https://leetcode.com/problems/spiral-matrix/?envType=study-plan-v2&envId=top-interview-150 
+
+def spiralOrder(matrix): 
+    
+    R = len(matrix)
+    C = len(matrix[0])
+    
+    r, c = 0, 0
+    
+    k = 0
+    n = 1 
+    result = []
+    
+    while R and C: 
+        
+        if k == 0: 
+            for i in range(C):
+                
+                result.append(matrix[r][c])
+                c+=1
+            c-=1
+            r += 1
+            
+        elif k == 1: 
+            for i in range(R):
+                
+                result.append(matrix[r][c]) 
+                r+=1 
+            r -= 1 
+            c-=1
+        
+        elif k == 2: 
+            for i in range(C):
+                
+                result.append(matrix[r][c]) 
+                c -= 1 
+            c+=1 
+            r-=1
+        
+        elif k == 3: 
+            for i in range(R):
+                
+                result.append(matrix[r][c]) 
+                r -= 1 
+            r += 1 
+            c+=1
+        
+        n += 1 
+        k += 1 
+        k %= 4
+        
+        if n == 2: 
+            n = 0 
+            R -= 1 
+            C -= 1 
+
+    return result
+
+matrix = [[1,2,3],[4,5,6],[7,8,9]] 
+spiralOrder(matrix)
+
+matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+spiralOrder(matrix)
+
+matrix = [[1,2,3,4],[10,11,12,5],[9,8,7,6]]
+spiralOrder(matrix)

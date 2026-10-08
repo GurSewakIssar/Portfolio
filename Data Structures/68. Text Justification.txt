@@ -1,0 +1,62 @@
+# 68. Text Justification 
+# https://leetcode.com/problems/text-justification/?envType=study-plan-v2&envId=top-interview-150 
+
+def fullJustify(words, maxWidth): 
+    
+    l,r = 0, 0
+    length = 0
+    result = []
+    
+    while l<len(words): 
+        
+        if r < len(words) and length + len(words[r]) + r-l <= maxWidth: 
+            length += len(words[r])
+            r += 1 
+        
+        else: 
+            tot_ws = r - l
+            spaces = maxWidth - length
+            Espaces = spaces // max(1, (tot_ws - 1))
+            ResSpaces = spaces % max(1, (tot_ws - 1))
+            
+            ## if not last row 
+            temp = ""
+            if r < len(words): 
+                for i in range(l, r): 
+                    temp += words[i]  
+                    
+                    if not i or i < r-1:
+                        temp += " " * Espaces 
+                        
+                        if ResSpaces: 
+                            temp += " " 
+                            ResSpaces -= 1 
+                        
+            ## Last Row 
+            else:
+                for i in range(l, r): 
+                    temp += words[i] 
+                    
+                    if i < r-1:
+                        temp += " "
+                    
+                    else: 
+                        temp += " " * (maxWidth - len(temp))  
+            
+            l = r
+            length = 0
+            result.append(temp if len(temp) == maxWidth else temp + " " * (maxWidth - len(temp))) 
+    
+    return result
+                        
+words = ["This", "is", "an", "example", "of", "text", "justification."] 
+maxWidth = 16
+fullJustify(words, maxWidth)
+
+words = ["What","must","be","acknowledgment","shall","be"] 
+maxWidth = 16
+fullJustify(words, maxWidth)
+
+words = ["Science","is","what","we","understand","well","enough","to","explain","to","a","computer.","Art","is","everything","else","we","do"] 
+maxWidth = 20
+fullJustify(words, maxWidth)

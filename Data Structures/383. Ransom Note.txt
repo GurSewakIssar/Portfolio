@@ -1,0 +1,38 @@
+# 383. Ransom Note
+
+# https://leetcode.com/problems/ransom-note/?envType=study-plan-v2&envId=top-interview-150 
+
+def canConstruct(ransomNote, magazine):
+    
+    if len(ransomNote) > len(magazine): return False 
+    
+    D = {} 
+    for i in magazine: 
+        if i in D: 
+            D[i] += 1 
+        else: 
+            D[i] = 1 
+    
+    d = {} 
+    
+    for i in ransomNote: 
+        if i not in D or (i in d and d[i]==D[i]): 
+            return False 
+        if i in d: 
+            d[i] += 1 
+        else: 
+            d[i] = 1 
+            
+    return True 
+
+ransomNote = "a" 
+magazine = "b"
+canConstruct(ransomNote, magazine)
+
+ransomNote = "aa" 
+magazine = "ab"
+canConstruct(ransomNote, magazine)
+
+ransomNote = "aa" 
+magazine = "aab"
+canConstruct(ransomNote, magazine)

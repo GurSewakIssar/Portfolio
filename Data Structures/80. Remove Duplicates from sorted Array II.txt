@@ -1,0 +1,53 @@
+# https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/?envType=study-plan-v2&envId=top-interview-150
+# 80. Remove Duplicates from sorted Array II 
+
+def removeDuplicates(nums): 
+    if not nums: return -1
+    
+    def swap(l, r): nums[l] = nums[r]
+    
+    l, r, cnt = 1, 1, 1 
+    
+    for i in range(1, len(nums)): 
+        
+        if l==r: 
+            if nums[i] == nums[i-1] and cnt <2: 
+                cnt += 1 
+                l += 1 
+                r += 1 
+            
+            elif nums[i] != nums[i-1]: 
+                cnt = 1 
+                l += 1 
+                r += 1 
+            
+            else: 
+                r += 1 
+                cnt += 1
+        
+        elif l != r: 
+            
+            if nums[i] != nums[i-1]: 
+                swap(l, r) 
+                l += 1 
+                r += 1 
+                cnt = 1 
+            
+            elif (nums[i] == nums[i-1] and cnt<2):
+                swap(l, r) 
+                l += 1 
+                r += 1 
+                cnt += 1 
+                
+            else:
+                r += 1
+                cnt += 1 
+                
+    return l, nums 
+
+
+nums = [1,1,1,2,2,3]
+nums = [0,0,1,1,1,1,2,3,3]
+nums = [1,1,2,2,3,3,3,3,3,4,5,6,6,6]
+
+removeDuplicates(nums)

@@ -1,0 +1,52 @@
+# 289. Game of Life 
+# https://leetcode.com/problems/game-of-life/?envType=study-plan-v2&envId=top-interview-150 
+
+def gameOfLife(board): 
+    
+    D = {0: 0, 1: 1, -1: 1, 2: 0}
+    RD = {0:0, 1:1, -1:0, 2:1}
+    
+    r = len(board) 
+    c = len(board[0]) 
+    
+    for i in range(r): 
+        for j in range(c):
+            
+            aa = board[i-1][j-1] if i-1>=0 and j-1>=0 else 0
+            bb = board[i-1][j] if i-1>=0 else 0
+            cc = board[i-1][j+1] if i-1>=0 and j+1<c else 0
+            
+            dd = board[i][j-1] if j-1>=0 else 0
+            ee = board[i][j+1] if j+1<c else 0 
+            
+            ff = board[i+1][j-1] if i+1<r and j-1>=0 else 0
+            gg = board[i+1][j] if i+1<r else 0
+            hh = board[i+1][j+1] if i+1<r and j+1<c else 0
+            
+            SUM = D[aa] + D[bb] + D[cc] + D[dd] + D[ee] + D[ff] + D[gg] + D[hh] 
+            
+            if D[board[i][j]] == 0: 
+                if SUM == 3: 
+                    board[i][j] = 2 
+            elif D[board[i][j]] == 1:
+                if SUM >= 2 and SUM<=3: 
+                    board[i][j] = 1  
+                elif SUM <2 or SUM>3: 
+                    board[i][j] = -1  
+    
+    for i in range(r): 
+        for j in range(c):
+            
+            board[i][j] = RD[board[i][j]]
+            
+    print(board)
+                    
+    
+board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]] 
+gameOfLife(board)
+
+board = [[1,1],[1,0]]
+gameOfLife(board)              
+
+board = [[0,0,1,0],[1,1,1,0], [1,0,1,1], [1,1,0,1]]
+gameOfLife(board)

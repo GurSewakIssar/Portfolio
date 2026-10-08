@@ -1,0 +1,46 @@
+# 48. Rotate Image 
+
+# https://leetcode.com/problems/rotate-image/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def rotate(matrix): 
+
+    l,r = 0, len(matrix)-1 
+    n = (r-l) 
+    
+    while l<r: 
+        
+        for i in range(n): 
+            
+            # i, C
+            temp = matrix[l+i][r]
+            matrix[l+i][r] = matrix[l][l+i]  
+            
+
+            # R, (N-i)
+            temp2 = matrix[r][l+n-i] 
+            matrix[r][l+n-i] = temp
+
+            
+            # N-i, l
+            temp = matrix[l+n-i][l] 
+            matrix[l+n-i][l] = temp2 
+
+            
+            # l, i
+            matrix[l][l+i] = temp 
+
+            
+            
+        l += 1 
+        r -= 1 
+        n = (r-l)
+    
+    print(matrix)
+        
+
+    
+matrix = [[1,2,3],[4,5,6],[7,8,9]]
+rotate(matrix)
+
+matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+rotate(matrix)

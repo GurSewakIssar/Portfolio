@@ -1,0 +1,45 @@
+# 6. Zigzag Conversion
+
+# https://leetcode.com/problems/zigzag-conversion/description/?envType=study-plan-v2&envId=top-interview-150
+
+def convert(s, numRows): 
+    if numRows == 1: return s 
+    
+    _dict = {i: "" for i in range(numRows)} 
+    cur = 0 
+    flag = 1
+    
+    for i in range(len(s)): 
+        _dict[cur] += s[i] 
+        
+        if flag:
+            cur += 1 
+        else: 
+            cur -= 1
+        
+        if flag and cur == numRows: 
+            flag = 0 
+            cur -= 2
+        elif not flag and cur == -1: 
+            flag = 1 
+            cur = 1  
+    
+    res = ""
+    for i in range(numRows):  
+        res += _dict[i] 
+        
+    return res
+        
+
+s = "PAYPALISHIRING" 
+numRows = 3
+convert(s, numRows)
+
+
+s = "PAYPALISHIRING" 
+numRows = 4
+convert(s, numRows)
+
+s = "abcbabcba"
+numRows = 3 
+convert(s, numRows)

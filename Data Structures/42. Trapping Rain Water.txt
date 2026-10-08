@@ -1,0 +1,26 @@
+# https://leetcode.com/problems/trapping-rain-water/description/?envType=study-plan-v2&envId=top-interview-150
+# 42. Trapping Rain Water
+
+def trap(height):
+    if not height: return 
+    
+    temp = [0] * (len(height))
+    mx = 0 
+    
+    for i in range(len(height)): 
+        mx = max(mx, height[i]) 
+        temp[i] = mx
+    
+    mx = 0 
+    SUM = 0
+    for i in range(len(height)-1, -1, -1): 
+        mx = max(mx, height[i]) 
+        SUM += max(0, min(temp[i], mx) - height[i])
+        
+    return SUM 
+
+height = [0,1,0,2,1,0,1,3,2,1,2,1]
+trap(height)
+
+height = [4,2,0,3,2,5] 
+trap(height)

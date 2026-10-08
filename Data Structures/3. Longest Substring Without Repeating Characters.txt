@@ -1,0 +1,37 @@
+# 3. Longest Substring Without Repeating Characters 
+# https://leetcode.com/problems/longest-substring-without-repeating-characters/?envType=study-plan-v2&envId=top-interview-150 
+
+
+def lengthOfLongestSubstring(s): 
+    
+    d = set() 
+    l, r = 0, 0
+    result = 0
+    
+    while r < len(s): 
+        if s[r] not in d: 
+            d.add(s[r]) 
+            result = max(result, r-l + 1)
+        else: 
+            while l<= r and s[r] in d: 
+                d.remove(s[l]) 
+                l += 1  
+            
+            d.add(s[r])
+        
+        r += 1  
+        
+    return result
+
+
+s = "abcabcbb"
+lengthOfLongestSubstring(s)
+
+s = "bbbbb"
+lengthOfLongestSubstring(s)
+
+s = "pwwkew"
+lengthOfLongestSubstring(s)
+
+s = "pwwkewlarmipkk"
+lengthOfLongestSubstring(s)

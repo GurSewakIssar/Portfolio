@@ -1,0 +1,26 @@
+# https://leetcode.com/problems/jump-game-ii/?envType=study-plan-v2&envId=top-interview-150
+# 45. Jump Game II 
+
+def jump(nums): 
+    if not nums: return -1 
+    
+    dis, mx = nums[0], float("-inf")
+    JUMPS = 1 
+    
+    for i in range(1, len(nums)-1): 
+        
+        dis -= 1 
+        mx = max(mx-1, nums[i]) 
+        
+        if not dis: 
+            JUMPS += 1 
+            dis = mx 
+        
+    return JUMPS 
+
+
+nums = [2,3,1,1,4]
+nums = [2,3,0,1,4]
+nums = [3,2,1,2,0,1,2]
+
+jump(nums)

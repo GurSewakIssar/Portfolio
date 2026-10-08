@@ -1,0 +1,46 @@
+# 380. Insert Delete GetRandom O(1) 
+# https://leetcode.com/problems/insert-delete-getrandom-o1/?envType=study-plan-v2&envId=top-interview-150 
+
+import random
+class RandomizedSet: 
+    def __init__(self):
+        
+        
+        self.Array = []
+        self.Dict = {} 
+        
+    def insert(self, val): 
+        if val in self.Dict: return False 
+        self.Dict[val] = len(self.Array) 
+        self.Array.append(val) 
+        
+        return True
+    
+    def remove(self, val): 
+        if val in self.Dict: 
+            n = len(self.Array)-1 
+            
+            self.Array[self.Dict[val]], self.Array[n] = self.Array[n], self.Array[self.Dict[val]] 
+            self.Dict[self.Array[self.Dict[val]]] = self.Dict[val]
+            self.Array.pop() 
+            del self.Dict[val]
+            return True
+        else: 
+            return False
+    
+    def getRandom(self): 
+        
+        if self.Array:
+            return random.choice(self.Array)
+        else: 
+            return
+            
+rs = RandomizedSet()
+rs.insert(1) 
+rs.remove(2)
+rs.insert(2) 
+rs.getRandom()
+rs.remove(1)
+rs.insert(2)
+rs.insert(3)
+rs.getRandom()

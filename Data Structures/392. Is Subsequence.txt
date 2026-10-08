@@ -1,0 +1,24 @@
+# 392. Is Subsequence 
+# https://leetcode.com/problems/is-subsequence/?envType=study-plan-v2&envId=top-interview-150 
+
+def isSubsequence(s, t) :
+    
+    if not s and not t: return 
+    
+    l = 0 
+    r = 0 
+    
+    while l < len(s) and r < len(t): 
+        if s[l] == t[r]: l += 1 
+        r += 1 
+    
+    return len(s) == l 
+
+
+s = "abc" 
+t = "ahbgdc" 
+isSubsequence(s, t)
+
+s = "axc" 
+t = "ahbgdc"
+isSubsequence(s, t)

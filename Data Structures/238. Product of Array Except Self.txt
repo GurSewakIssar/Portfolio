@@ -1,0 +1,25 @@
+# https://leetcode.com/problems/product-of-array-except-self/?envType=study-plan-v2&envId=top-interview-150
+# 238. Product of Array Except Self 
+
+def proudctExceptSelf(nums): 
+    if not nums: return -1 
+    
+    temp = [1] * len(nums) 
+    
+    for i in range(1, len(nums)): 
+        temp[i] = temp[i-1] * nums[i-1]
+    
+    print(temp)
+    Sum = 1
+    
+    for i in range(len(nums)-2, -1, -1): 
+        Sum = Sum * nums[i+1]
+        temp[i] *= Sum 
+        
+    return temp
+        
+
+nums = [1,2,3,4]
+proudctExceptSelf(nums)
+nums = [-1,1,0,-3,3]
+proudctExceptSelf(nums)

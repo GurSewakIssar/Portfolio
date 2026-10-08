@@ -1,0 +1,36 @@
+# https://leetcode.com/problems/gas-station/description/?envType=study-plan-v2&envId=top-interview-150
+# 134. Gas Station 
+
+def canCompleteCircuit(gas, cost): 
+    if not gas or not cost or (len(gas) != len(cost)): return 
+    
+    SUM = 0  
+    
+    for i in range(len(gas)): 
+        SUM += (gas[i] - cost[i]) 
+        
+    if SUM <0: return -1 
+    
+    mx = float("-inf")
+    SUM = 0
+    idx = None
+    for i in range(len(gas)-1, -1, -1): 
+        SUM += gas[i]-cost[i]
+        
+        if SUM>= mx: 
+            mx = SUM 
+            idx = i 
+            
+    return idx
+    
+gas = [1,2,3,4,5] 
+cost = [3,4,5,1,2]
+canCompleteCircuit(gas, cost)
+
+gas = [2,3,4] 
+cost = [3,4,3]
+canCompleteCircuit(gas, cost)
+
+gas = [5,4,3,2,1] 
+cost = [1,2,3,4,5]
+canCompleteCircuit(gas, cost)

@@ -1,0 +1,30 @@
+# 73. Set Matrix Zeroes 
+# https://leetcode.com/problems/set-matrix-zeroes/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def setZeroes(matrix):
+    m = len(matrix) 
+    n = len(matrix[0])
+    
+    for r in range(m): 
+        for c in range(n): 
+            if not matrix[r][c]: 
+                matrix[r][0] = 0 
+                matrix[0][c] = 0 
+    
+    for r in range(m-1, -1, -1): 
+        for c in range(n-1, -1, -1): 
+            if not matrix[r][0] or not matrix[0][c]: 
+                matrix[r][c] = 0 
+    
+    print(matrix)
+               
+
+matrix = [[1,1,1],[1,0,1],[1,1,1]] 
+setZeroes(matrix)
+
+matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+setZeroes(matrix)
+
+
+matrix = [[0,1,2,0,3],[3,4,0,2,1],[1,3,1,5,0],[1,3,1,5,1]]
+setZeroes(matrix)

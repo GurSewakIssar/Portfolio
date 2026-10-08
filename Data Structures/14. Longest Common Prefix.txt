@@ -1,0 +1,24 @@
+# https://leetcode.com/problems/longest-common-prefix/?envType=study-plan-v2&envId=top-interview-150
+
+# 14. Longest Common Prefix
+
+def longestCommonPrefix(strs): 
+    if not strs: return 
+    
+    idx = 0
+    mn = float("inf")
+    while idx<mn:
+        for i in strs: 
+            mn = min(mn, len(i))
+            if strs[0][idx] != i[idx]: 
+                return strs[0][0:idx] 
+        
+        idx += 1 
+    return strs[0][0:idx] 
+
+strs = ["flower","flow","flight"] 
+longestCommonPrefix(strs)
+
+strs = ["dog","racecar","car"]
+strs = ["dog","dog","dogq"]
+longestCommonPrefix(strs)
