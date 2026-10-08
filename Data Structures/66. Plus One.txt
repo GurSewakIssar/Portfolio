@@ -1,0 +1,35 @@
+# 66. Plus One 
+
+# https://leetcode.com/problems/plus-one/?envType=study-plan-v2&envId=top-interview-150 
+
+def plusOne(digits):
+    c = 0 
+    add = 1
+    n = len(digits)-1 
+    
+    while n>=0: 
+        e = digits[n] 
+        e = e + add + c 
+        add = 0
+        
+        if e>9: 
+            e = 0 
+            c = 1 
+        else: 
+            c = 0
+        digits[n] = e 
+        
+        n-=1  
+    
+    if c: 
+        return [1] + digits 
+    return digits 
+
+digits = [1,2,3] 
+plusOne(digits)
+
+digits = [4,3,2,1] 
+plusOne(digits)
+
+digits = [9]
+plusOne(digits)

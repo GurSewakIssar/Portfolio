@@ -1,0 +1,26 @@
+# 129. Sum Root to Leaf Numbers
+
+# https://leetcode.com/problems/sum-root-to-leaf-numbers/?envType=study-plan-v2&envId=top-interview-150 
+
+def sumNumbers(root):
+    
+    result = 0 
+    
+    def rec(node, s): 
+        if not node:
+            nonlocal result
+            result += int(s) 
+        
+        rec(node.left, s + str(node.val))
+        rec(node.right, s + str(node.val)) 
+        
+    
+    rec(root, "") 
+    return result 
+
+root = [1,2,3] 
+sumNumbers(root)
+
+
+root = [4,9,0,5,1]
+sumNumbers(root) 

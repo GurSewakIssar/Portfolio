@@ -1,0 +1,40 @@
+# 69. Sqrt(x) 
+
+# https://leetcode.com/problems/sqrtx/?envType=study-plan-v2&envId=top-interview-150 
+
+def mySqrt(x):
+    
+    def mid(st, end): 
+        return st + (end-st)//2 
+    
+    def binarySearch(st, end): 
+        if st>end: return 
+        
+        m = mid(st, end) 
+        
+        if m*m>x: 
+            binarySearch(st, m-1) 
+        else: 
+            nonlocal result 
+            result = m 
+            binarySearch(m+1, end) 
+            
+    result = 0 
+    
+    binarySearch(0, x//2) 
+    return result 
+
+x = 4 
+mySqrt(x)
+
+x = 14 
+mySqrt(x)
+
+x = 17
+mySqrt(x)
+
+x = 55 
+mySqrt(x)
+
+x = 2 
+mySqrt(x)

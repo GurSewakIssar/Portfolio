@@ -1,0 +1,43 @@
+# 228. Summary Ranges
+
+# https://leetcode.com/problems/summary-ranges/?envType=study-plan-v2&envId=top-interview-150 
+
+def summaryRanges(nums): 
+    
+    l = nums[0] 
+    r = nums[0] 
+    i = 1 
+    result = []
+    
+    while i<len(nums):
+        
+        if nums[i]-1 == r: 
+            r = nums[i] 
+            
+        else: 
+            if l == r: 
+                result.append(str(int(l)))
+            else:
+                result.append(f"{l}->{r}")  
+            
+            l,r = nums[i], nums[i]  
+        
+        i += 1
+        
+    if l == r: 
+        result.append(str(int(l)))
+    else:
+        result.append(f"{l}->{r}")  
+            
+    return result
+                
+            
+nums = [0,1,2,4,5,7] 
+summaryRanges(nums)
+
+nums = [0,2,3,4,6,8,9]
+summaryRanges(nums)
+
+
+nums = [1,2,3,4,7,8, 13]
+summaryRanges(nums)

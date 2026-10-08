@@ -1,0 +1,47 @@
+# 221. Maximal Square
+
+# https://leetcode.com/problems/maximal-square/?envType=study-plan-v2&envId=top-interview-150 
+
+def maximalSquare(matrix):
+    
+    A = [0] * len(matrix[0]) 
+    mx = 0
+    for r in range(len(matrix)): 
+        prev = 0
+        this = 0
+        for c in range(len(matrix[0])): 
+            
+            up = A[c] if r>0 else 0
+            left = A[c-1] if c>0 else 0
+            
+            if r>0:
+                prev = this
+                this = A[c] 
+            else: 
+                prev = 0
+            upleft = prev 
+
+            A[c] = min(up,left,upleft) + 1 if int(matrix[r][c]) else 0 
+            mx = max(A[c], mx)
+
+    return mx
+
+matrix = [
+    ["1","0","1","0","0"],
+    ["1","0","1","1","1"],
+    ["1","1","1","1","1"],
+    ["1","0","0","1","0"]
+    ]
+maximalSquare(matrix)
+
+matrix = [["0","1"],["1","0"]]
+maximalSquare(matrix)
+
+matrix = [
+    ["1","1","1","1","1"],
+    ["1","1","1","1","1"],
+    ["1","1","1","1","1"],
+    ["1","1","1","1","1"],
+    ["1","1","1","1","0"]
+    ]
+maximalSquare(matrix)

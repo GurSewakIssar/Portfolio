@@ -1,0 +1,63 @@
+# 86. Partition List
+
+# https://leetcode.com/problems/partition-list/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+def partition(head, x):
+    
+    l = ListNode(0) 
+    lc = l
+    r = ListNode(0)
+    rc = r 
+    
+    cur = head
+    while cur: 
+        if cur.val<x: 
+            lc.next = cur 
+            lc = lc.next 
+        else: 
+            rc.next = cur 
+            rc = rc.next 
+            
+        cur = cur.next 
+    
+    lc.next = r.next
+    rc.next = None 
+    
+    return l.next
+
+
+head = [1,4,3,2,5,2]
+x = 3
+
+head = CreateLL(head)
+head = partition(head, x)
+LL_Iter(head)
+
+
+head = [2,1] 
+x = 2
+ 
+head = CreateLL(head)
+head = partition(head, x)
+LL_Iter(head)

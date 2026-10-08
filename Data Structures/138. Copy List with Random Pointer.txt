@@ -1,0 +1,65 @@
+# 138. Copy List with Random Pointer
+
+# https://leetcode.com/problems/copy-list-with-random-pointer/?envType=study-plan-v2&envId=top-interview-150 
+
+class RandomNode: 
+    def __init__(self, val=0, random=None): 
+        self.val = val 
+        self.random = random
+        self.next = None
+        
+# This is not for this problem, I misunderstood
+# def createRandomLL(vals): 
+#     d = {} 
+    
+#     for i, v in enumerate(vals): 
+#         d[i] = RandomNode(v[0]) 
+        
+#     for i, v in enumerate(vals): 
+#         d[i].random = d[v[1]] if v[1] != -1 else None
+        
+#     dummy = RandomNode() 
+#     cur = dummy 
+    
+#     for i in range(len(d)): 
+#         cur.next = d[i] 
+#         cur = cur.next 
+    
+#     return dummy.next
+
+def copyRandomLL(head): 
+    new = RandomNode() 
+    cur = new
+    for i in head: 
+        cur.next = RandomNode(i[0], i[1])
+        cur = cur.next 
+    
+    return new.next
+    
+
+def copyRandomList(head):
+    
+    d = {} 
+    i = 0 
+    dummy = head 
+    
+    while dummy: 
+        d[i] = RandomNode(dummy.val, dummy.random) 
+        i += 1 
+        dummy = dummy.next 
+    
+    new = RandomNode()
+    cur = new 
+    
+    i = 0
+    while i<len(d): 
+        cur.next = d[i]
+        i += 1 
+        cur = cur.next 
+        
+    return new.next
+
+
+head = [[7,-1],[13,0],[11,4],[10,2],[1,0]]
+head = copyRandomLL(head)
+head = copyRandomList(head)

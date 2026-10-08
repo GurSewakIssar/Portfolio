@@ -1,0 +1,26 @@
+# 918. Maximum Sum Circular Subarray
+
+# https://leetcode.com/problems/maximum-sum-circular-subarray/?envType=study-plan-v2&envId=top-interview-150 
+
+def maxSubarraySumCircular(nums):      
+    total = 0 
+    mxSum, curMx = nums[0], 0 
+    mnSum, curMn = nums[0], 0 
+    for ele in nums: 
+        total += ele
+        
+        curMx = max(curMx+ele, ele) 
+        mxSum = max(mxSum, curMx) 
+        curMn = min(curMn + ele, ele) 
+        mnSum = min(mnSum, curMn) 
+    
+    return max(mxSum, total - mnSum) if mxSum>0 else mxSum 
+
+nums = [1,-2,3,-2]
+maxSubarraySumCircular(nums)
+nums = [5,-3,5]
+maxSubarraySumCircular(nums)
+nums = [-3,-2,-3]
+maxSubarraySumCircular(nums)
+nums = [2, -2, 3, 4, -8, 5, 6]
+maxSubarraySumCircular(nums)

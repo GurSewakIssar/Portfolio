@@ -1,0 +1,36 @@
+# 17. Letter Combinations of a Phone Number
+
+# https://leetcode.com/problems/letter-combinations-of-a-phone-number/?envType=study-plan-v2&envId=top-interview-150 
+
+def letterCombinations(digits):
+    if not digits: return [] 
+    
+    di = {
+        "2": ["a", "b", "c"], 
+        "3": ["d", "e", "f"], 
+        "4": ["g", "h", "i"], 
+        "5": ["j", "k", "l"], 
+        "6": ["m", "n", "o"], 
+        "7": ["p", "q", "r","s"], 
+        "8": ["t", "u", "v"], 
+        "9": ["w", "x", "y", "z"], 
+        } 
+    
+    result = []
+    
+    def rec(dig, s): 
+        if not dig:
+            nonlocal result
+            result.append(s) 
+            return
+            
+        for i in di[dig[0]]: 
+            rec(dig[1:], s + i) 
+    rec(digits, "")
+    return result 
+
+digits = "23" 
+letterCombinations(digits)
+
+digits = "2"
+letterCombinations(digits)

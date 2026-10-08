@@ -1,0 +1,36 @@
+# 63. Unique Paths II
+
+# https://leetcode.com/problems/unique-paths-ii/?envType=study-plan-v2&envId=top-interview-150 
+
+def uniquePathsWithObstacles(obstacleGrid):
+    
+    row = len(obstacleGrid) 
+    col = len(obstacleGrid[0]) 
+    temp = [0] * col 
+    temp[-1] = 1 if obstacleGrid[-1][-1]==0 else 0
+    
+    for r in range(row-1, -1, -1): 
+        for c in range(col-1, -1, -1): 
+            if r == row-1 and c == col-1: continue
+            
+            down = temp[c] if r+1< row else 0 
+            right = temp[c+1] if c+1<col else 0 
+            
+            if not obstacleGrid[r][c]:
+                temp[c] = down+right
+            else: 
+                temp[c] = 0 
+                
+    return temp[0] 
+
+obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]] 
+uniquePathsWithObstacles(obstacleGrid)
+
+obstacleGrid = [[0,1],[0,0]]
+uniquePathsWithObstacles(obstacleGrid)
+
+obstacleGrid = [[0,0,0],[0,0,0],[0,0,0]] 
+uniquePathsWithObstacles(obstacleGrid)
+
+obstacleGrid = [[0,0,0,0],[0,1,0,0],[0,0,0,0], [0,0,0,0]] 
+uniquePathsWithObstacles(obstacleGrid)

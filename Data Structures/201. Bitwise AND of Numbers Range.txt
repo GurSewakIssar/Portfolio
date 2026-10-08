@@ -1,0 +1,49 @@
+# 201. Bitwise AND of Numbers Range 
+
+# https://leetcode.com/problems/bitwise-and-of-numbers-range/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def rangeBitwiseAnd(left, right):
+    
+    diff = right - left
+    a = 0 
+    res = 0 
+    
+    for bit in range(32):
+        
+        if ((left>>bit) & 1):
+            a |= (((left>>bit) & 1))<<bit 
+            
+            if diff < ((1<<bit+1) - a):
+                res |= (1<<bit) 
+    
+    return res
+
+# O(32)
+def rangeBitwiseAnd(left, right): 
+    i = 0 
+    while left != right: 
+        left >>= 1 
+        right >>= 1 
+        i += 1 
+        
+    return left<<i
+        
+left = 5 
+right = 7 
+rangeBitwiseAnd(left, right)
+
+left = 0 
+right = 0 
+rangeBitwiseAnd(left, right)
+
+left = 1 
+right = 2147483647
+rangeBitwiseAnd(left, right)
+
+left = 18 
+right = 25 
+rangeBitwiseAnd(left, right)
+
+left = 32 
+right = 64 
+rangeBitwiseAnd(left, right) 

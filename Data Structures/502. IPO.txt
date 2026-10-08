@@ -1,0 +1,66 @@
+# 502. IPO
+
+# https://leetcode.com/problems/ipo/description/?envType=study-plan-v2&envId=top-interview-150
+
+# N Space, kN Time
+def findMaximizedCapital(k, w, profits, capital):
+    import heapq
+    heap = [] 
+    heapq.heapify(heap)
+    result = 0
+    Cap = w
+    s = set()
+    
+    for i in range(k): 
+        for idx,c in enumerate(capital): 
+            if Cap>=c and idx not in s: 
+                heapq.heappush(heap, -profits[idx]) 
+                s.add(idx)
+        
+        pop = heapq.heappop(heap)
+        Cap += (-pop) 
+        result += (-pop)
+        
+    
+    return result
+
+
+# space = N, Time = N
+def findMaximizedCapital(k, w, profits, capital):
+    import heapq
+    heap = [[capital[i],-profits[i]] for i in range(len(profits))]
+    heapq.heapify(heap)
+    prof = [] 
+    heapq.heapify(prof)
+    cap = w 
+    result = 0
+    
+    for i in range(k): 
+        n = len(heap)
+        j =0
+        while j<n:
+            if heap[0][0]<=cap: 
+                pop = heapq.heappop(heap)
+                heapq.heappush(prof, pop[1])   
+            j+=1
+        
+        pop = heapq.heappop(prof) 
+        cap += (-pop) 
+        result += (-pop) 
+    
+    return result 
+
+
+
+k = 2 
+w = 0 
+profits = [1,2,3] 
+capital = [0,1,1] 
+findMaximizedCapital(k, w, profits, capital)
+
+
+k = 3 
+w = 0 
+profits = [1,2,3] 
+capital = [0,1,2]
+findMaximizedCapital(k, w, profits, capital)

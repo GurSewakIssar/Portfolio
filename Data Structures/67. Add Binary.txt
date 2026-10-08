@@ -1,0 +1,48 @@
+# 67. Add Binary
+
+# https://leetcode.com/problems/add-binary/?envType=study-plan-v2&envId=top-interview-150 
+
+## can be solved with // and mod also, less verbose
+def addBinary(a, b):
+    c = 0 
+    if len(b)>len(a): a, b= b, a
+    
+    i, j = len(a)-1, len(b)-1 
+    result = []
+    
+    while i>=0 or j>=0: 
+        aa = a[i] 
+        bb = b[j] if j>=0 else 0
+        k = int(aa) + int(bb) 
+        
+        if k+c>2: 
+            c = 1 
+            result.append("1")
+            
+        elif k+c>1: 
+            c = 1 
+            result.append("0")
+        else: 
+            result.append(str(k+c))
+            c = 0 
+        i-=1 
+        j-=1 
+        
+    if c: 
+        r = "1"
+        r += "".join(result[::-1])
+        return r
+    return "".join(result[::-1])
+
+
+a = "11" 
+b = "1" 
+addBinary(a, b)
+
+a = "1010" 
+b = "1011"
+addBinary(a, b)       
+
+a = "1111" 
+b = "1" 
+addBinary(a,b)

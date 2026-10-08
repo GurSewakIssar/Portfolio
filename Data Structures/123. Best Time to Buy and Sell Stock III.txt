@@ -1,0 +1,31 @@
+# 123. Best Time to Buy and Sell Stock III 
+
+# https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/?envType=study-plan-v2&envId=top-interview-150 
+
+def maxProfit(prices):
+    k = 2
+    temp = [0] * len(prices) 
+    A, R = temp.copy(), temp.copy()
+    
+    
+    for i in range(k): 
+        diff = float("-inf")
+        for j in range(len(A)): 
+            
+            diff = max(diff, A[j] - prices[j]) 
+            R[j] = max(R[j-1] if j-1>=0 else float("-inf"), prices[j] + diff) 
+        
+        A = R.copy() 
+        R = temp.copy()
+      
+    
+    return A[-1]
+
+prices = [3,3,5,0,0,3,1,4] 
+maxProfit(prices)
+
+prices = [1,2,3,4,5] 
+maxProfit(prices)
+
+prices = [7,6,4,3,1]
+maxProfit(prices)

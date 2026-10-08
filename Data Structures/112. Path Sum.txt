@@ -1,0 +1,33 @@
+# 112. Path Sum 
+
+# https://leetcode.com/problems/path-sum/?envType=study-plan-v2&envId=top-interview-150 
+
+def hasPathSum(root, targetSum): 
+    if not root: return  
+    
+    def rec(node, s): 
+        if not node:
+            if s == targetSum: 
+                return True  
+            else: 
+                return False 
+            
+        
+        left = rec(node.left, s + node.val) 
+        right = rec(node.right, s + node.val) 
+        
+        return left or right 
+    
+    return rec(root, 0)
+    
+root = [5,4,8,11,None,13,4,7,2,None,None,None,1]
+targetSum = 22 
+hasPathSum(root, targetSum)
+
+root = [1,2,3] 
+targetSum = 5
+hasPathSum(root, targetSum)
+ 
+root = [] 
+targetSum = 0
+hasPathSum(root, targetSum)

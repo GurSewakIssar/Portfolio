@@ -1,0 +1,32 @@
+# 108. Convert Sorted Array to Binary Search Tree
+
+# https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/?envType=study-plan-v2&envId=top-interview-150
+
+def sortedArrayToBST(nums):
+    
+    def findMid(li): 
+        return len(li)//2
+    def rec(li): 
+        if li == []: 
+            return None 
+        elif len(li) == 1: 
+            return TreeNode(li[0]) 
+        
+        m = findMid(li) 
+        
+        if m:
+            left = rec(li[:m])  
+        else: 
+            left = None
+        right = rec(li[m+1:]) 
+        
+        node = TreeNode(li[m]) 
+        node.left = left 
+        node.right = right 
+        
+        return node 
+    
+    return rec(nums)
+
+nums = [-10,-3,0,5,9] 
+root = sortedArrayToBST(nums) 

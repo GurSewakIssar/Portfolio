@@ -1,0 +1,32 @@
+# 139. Word Break 
+
+# https://leetcode.com/problems/word-break/?envType=study-plan-v2&envId=top-interview-150 
+
+def wordBreak(s, wordDict): 
+    A = [0]*len(s) 
+    
+    for i in range(len(s)-1, -1, -1): 
+        for w in wordDict: 
+            if s[i-len(w)+1:i+1] == w: 
+                if i + 1< len(s) and A[i+1]: 
+                    A[i-len(w)+1] = 1 
+                elif i+1>=len(s): 
+                    A[i-len(w)+1] = 1  
+    
+    return A[0] == 1
+
+s = "leetcode" 
+wordDict = ["leet","code"]
+wordBreak(s, wordDict)
+
+s = "applepenapple" 
+wordDict = ["apple","pen"]
+wordBreak(s, wordDict)
+
+s = "catsandog" 
+wordDict = ["cats","dog","sand","and","cat"]
+wordBreak(s, wordDict)
+
+s = "noknotokshok" 
+wordDict = ["ok","no","tokshok"]
+wordBreak(s, wordDict)

@@ -1,0 +1,34 @@
+# 49. Group Anagrams
+
+# https://leetcode.com/problems/group-anagrams/?envType=study-plan-v2&envId=top-interview-150 
+
+
+def groupAnagrams(strs): 
+    
+    D = {}
+    
+    for i in strs: 
+        d = [0 for i in range(26)]
+        
+        for e in i:
+            d[ord(e)-97] += 1 
+        d = tuple(d)
+        
+        if d in D: 
+            D[d].append(i) 
+        else: 
+            D[d] = [i] 
+    
+    
+    return [i for i in D.values()]
+    
+
+
+strs = ["eat","tea","tan","ate","nat","bat"]
+groupAnagrams(strs)
+
+strs = [""] 
+groupAnagrams(strs)
+
+strs = ["a"]
+groupAnagrams(strs)

@@ -1,0 +1,83 @@
+# 530. Minimum Absolute Difference in BST 
+
+# https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=study-plan-v2&envId=top-interview-150 
+
+
+class TreeNode: 
+    def __init__(self, val): 
+        self.val = val 
+        self.left = None 
+        self.right = None 
+null = None
+
+def createBST(vals): 
+    if not vals: return None
+    i = 0 
+    tree = TreeNode(vals[0])
+    temp = [tree]
+    
+    while i < len(vals): 
+        t = []
+        
+        for v in temp: 
+            if v != null:
+                if i*2 + 1 < len(vals):
+                    
+                    if vals[i*2 + 1] != null:
+                        left = TreeNode(vals[i*2 + 1]) 
+                    else: 
+                        left = vals[i*2 + 1]
+                    t.append(left)  
+                    v.left = left
+                    
+                    if i*2 + 2 < len(vals):
+                        if vals[i*2 + 2] != null: 
+                            right = TreeNode(vals[i*2 + 2]) 
+                        else: 
+                            right = vals[i*2 + 2]
+                        t.append(right) 
+                        v.right = right 
+            else: 
+                t.append(null) 
+                t.append(null)
+                    
+            i += 1 
+        
+        temp = t 
+        
+    return tree
+
+
+
+def getMinimumDifference(root):
+    
+    result = float("inf") 
+    
+    def rec(node, prev): 
+        if not node: return prev 
+        
+        prev = rec(node.left, prev) 
+        if prev: 
+            nonlocal result
+            result = min(result, node.val-prev.val)
+        
+        right = rec(node.right, node)  
+        
+        return right
+         
+    rec(root, None) 
+    
+    return result
+
+root = [4,2,6,1,3] 
+root = createBST(root)
+getMinimumDifference(root)
+
+root = [1,0,48,null,null,12,49]
+root = createBST(root)
+getMinimumDifference(root)
+
+
+root = [50, 25, 75, 15, 35, 52, 78]
+root = createBST(root)
+getMinimumDifference(root)

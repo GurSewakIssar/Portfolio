@@ -1,0 +1,59 @@
+# 79. Word Search 
+
+# https://leetcode.com/problems/word-search/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def exist(board, word):
+    result = False
+    def rec(r, c, i, s): 
+        if i == len(word) and s == word: 
+            nonlocal result 
+            result = True
+            return  
+        elif r <0 or c <0 or r>=len(board) or c>=len(board[0]): 
+            return
+        
+        nonlocal di
+                
+        if board[r][c] == word[i]: 
+            
+            if (r+1, c) not in di:
+                di.add((r+1,c))
+                rec(r+1,c, i+1, s + board[r][c]) 
+                di.remove((r+1, c))
+                
+            if (r, c+1) not in di:
+                di.add((r,c+1))
+                rec(r,c+1, i+1, s + board[r][c])
+                di.remove((r, c+1))
+            
+            if (r-1, c) not in di:
+                di.add((r-1,c))
+                rec(r-1,c, i+1, s + board[r][c])
+                di.remove((r-1, c))
+            
+            if (r, c-1) not in di:
+                di.add((r,c-1))
+                rec(r,c-1, i+1, s + board[r][c])
+                di.remove((r, c-1))
+                
+    for r in range(len(board)): 
+        for c in range(len(board[0])):
+            di = set()
+            rec(r,c, 0, "") 
+    return result 
+
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]] 
+word = "ABCCED"
+exist(board, word)
+
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]] 
+word = "SEE"
+exist(board, word)
+
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]] 
+word = "ABCB"
+exist(board, word)
+
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]] 
+word = "EECCBESE"
+exist(board, word)

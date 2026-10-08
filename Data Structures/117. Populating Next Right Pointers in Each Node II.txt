@@ -1,0 +1,58 @@
+# 117. Populating Next Right Pointers in Each Node II
+
+# https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNodeL: 
+    def __init__(self, val=None): 
+        self.val = val 
+        self.nextl = None
+        
+        
+class TreeNode: 
+    def __init__(self, val = None): 
+        self.val = val 
+        self.right = None 
+        self.left = None 
+        self.next = None
+    
+
+def connect(root):
+    if not root: return root 
+    
+    dummy = ListNodeL() 
+    dummy.nextl = ListNodeL(root)
+    head = dummy.nextl
+    
+    while head: 
+        tail = head 
+        prev = None 
+        
+        dummy1 = ListNodeL()
+        temp = dummy1 
+        
+        while tail: 
+            
+            if tail.val.left: 
+                temp.nextl = ListNodeL(tail.val.left)
+                temp = temp.nextl 
+            
+            if tail.val.right: 
+                temp.nextl = ListNodeL(tail.val.right)
+                temp = temp.nextl 
+            
+            if prev: 
+                prev.val.next = tail.val
+            prev = tail 
+            tail = tail.nextl 
+        
+        head = dummy1.nextl
+    
+    return root
+
+root = [1,2,3,4,5,null,7]
+root = createBST(root)
+root = connect(root)
+
+root = []
+root = createBST(root)
+root = connect(root)

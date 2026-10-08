@@ -1,0 +1,32 @@
+# 242. Valid Anagram 
+
+# https://leetcode.com/problems/valid-anagram/?envType=study-plan-v2&envId=top-interview-150 
+
+def isAnagram(s, t): 
+    
+    D = {} 
+    
+    for i in s: 
+        if i not in D: 
+            D[i] = 1 
+        else: 
+            D[i] += 1 
+            
+    for i in t: 
+        
+        if i not in D: return False 
+        else:  
+            D[i] -= 1 
+    
+    for i in D: 
+        if D[i] != 0: return False 
+    
+    return True
+
+s = "anagram" 
+t = "nagaram"
+isAnagram(s, t)
+
+s = "rat" 
+t = "car"
+isAnagram(s, t)

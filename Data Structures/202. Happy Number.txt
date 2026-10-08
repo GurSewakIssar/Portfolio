@@ -1,0 +1,28 @@
+# 202. Happy Number 
+
+# https://leetcode.com/problems/happy-number/?envType=study-plan-v2&envId=top-interview-150 
+
+def isHappy(n):
+    
+    n = str(n) 
+    d = set()
+    
+    while True:
+        t = 0
+        for v in n: 
+            t += (int(v))**2 
+        
+        if t in d: return False 
+        elif t == 1: return True 
+        
+        d.add(t)  
+        n = str(t)
+
+n = 19 
+isHappy(n)
+
+n = 2
+isHappy(n)
+
+n = 1048674346939070979894794179274884403 
+isHappy(n)

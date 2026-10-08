@@ -1,0 +1,57 @@
+# 2. Add Two Numbers 
+
+# https://leetcode.com/problems/add-two-numbers/description/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+def addTwoNumbers(l1, l2):
+    
+    dummy = ListNode(0) 
+    cur = dummy
+    carry = 0 
+    
+    while l1 or l2: 
+        a, b = l1.val if l1 != None else 0 ,  l2.val if l2 != None else 0
+        c = (a + b)
+        c += carry 
+        
+        carry = c // 10 
+        c = c % 10 
+
+        cur.next = ListNode(c) 
+        l1= l1.next if l1 else None
+        l2 = l2.next if l2 else None
+        cur = cur.next 
+        
+    if carry: 
+        cur.next = ListNode(carry)
+    
+    return dummy.next
+    
+l1 = [2,4,3] 
+l2 = [5,6,4]
+l1 = CreateLL(l1) 
+l2 = CreateLL(l2) 
+
+l3 = addTwoNumbers(l1, l2) 
+LL_Iter(l3)

@@ -1,0 +1,26 @@
+# 172. Factorial Trailing Zeroes 
+
+# https://leetcode.com/problems/factorial-trailing-zeroes/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def trailingZeroes(n): 
+    if n<5: return 0
+    
+    count = 0 
+    i = 5
+    while n //i>0: 
+        count += n//i 
+        i*=5  
+    
+    return count 
+
+n = 3 
+trailingZeroes(n) 
+
+n = 5 
+trailingZeroes(n) 
+
+n = 24 
+trailingZeroes(n)
+ 
+n = 124 
+trailingZeroes(n)

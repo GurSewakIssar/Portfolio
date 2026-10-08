@@ -1,0 +1,20 @@
+# 100. Same Tree
+
+# https://leetcode.com/problems/same-tree/description/?envType=study-plan-v2&envId=top-interview-150
+
+def isSameTree(p, q):
+    
+    def rec(p, q): 
+        if not p and not q: return True
+        elif not p and q: return False 
+        elif p and not q: return False 
+        
+        if p.val == q.val: 
+            left = rec(p.left, q.left) 
+            right = rec(p.right, q.right)  
+        else: 
+            return False  
+    
+        return True and left and right
+    
+    return rec(p, q)

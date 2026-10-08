@@ -1,0 +1,129 @@
+# 199. Binary Tree Right Side View
+
+# https://leetcode.com/problems/binary-tree-right-side-view/?envType=study-plan-v2&envId=top-interview-150 
+
+class TreeNode: 
+    def __init__(self, val): 
+        self.val = val 
+        self.left = None 
+        self.right = None 
+null = None
+
+def createBST(vals): 
+    if not vals: return None
+    i = 0 
+    tree = TreeNode(vals[0])
+    temp = [tree]
+    
+    while i < len(vals): 
+        t = []
+        
+        for v in temp: 
+            if v != null:
+                if i*2 + 1 < len(vals):
+                    
+                    if vals[i*2 + 1] != null:
+                        left = TreeNode(vals[i*2 + 1]) 
+                    else: 
+                        left = vals[i*2 + 1]
+                    t.append(left)  
+                    v.left = left
+                    
+                    if i*2 + 2 < len(vals):
+                        if vals[i*2 + 2] != null: 
+                            right = TreeNode(vals[i*2 + 2]) 
+                        else: 
+                            right = vals[i*2 + 2]
+                        t.append(right) 
+                        v.right = right 
+            else: 
+                t.append(null) 
+                t.append(null)
+                    
+            i += 1 
+        
+        temp = t 
+        
+    return tree
+
+
+
+def rightSideView(root): 
+    if not root: return 
+    
+    def Iter(nodes): 
+        temp = [] 
+        for n in nodes: 
+            if n.left: 
+                temp.append(n.left) 
+            if n.right: 
+                temp.append(n.right)
+
+    
+        return temp 
+    
+    if root.left:
+        left = [root.left] 
+    else: 
+        left = []  
+        
+    if root.right:
+        right = [root.right] 
+    else: 
+        right = []  
+    
+    result = [root.val] 
+    
+    while left or right: 
+        
+        templ = Iter(left) 
+        tempr = Iter(right) 
+  
+        if right: 
+            result.append(right[-1].val) 
+        else: 
+            result.append(left[-1].val) 
+
+            
+        left = templ 
+        right = tempr 
+
+    
+    return result
+
+# bfs
+def rightSideView(root): 
+    if not root: return 
+    
+    li = [root] 
+    result = []
+    
+    while li: 
+        temp = []
+        result.append(li[-1].val) 
+        
+        for n in li: 
+            if n.left:
+                temp.append(n.left) 
+            if n.right:
+                temp.append(n.right) 
+        
+        li = temp 
+    
+    return result  
+
+
+        
+    
+
+root = [1,2,3,null,5,null,4]
+root = createBST(root)
+rightSideView(root)
+
+root = [1,2,3,4,null,null,null,5]
+root = createBST(root)
+rightSideView(root)
+
+root = [1,null,3]
+root = createBST(root)
+rightSideView(root)

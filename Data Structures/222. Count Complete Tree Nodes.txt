@@ -1,0 +1,32 @@
+# 222. Count Complete Tree Nodes
+
+# https://leetcode.com/problems/count-complete-tree-nodes/?envType=study-plan-v2&envId=top-interview-150 
+
+def countNodes(root): 
+    if not root: return 0
+    lastFlag = 0 
+    node = root
+    c = 0
+    while node: 
+        c += 1 
+        
+        if not node.right: 
+            if node.left: 
+                c += 1 
+                lastFlag = 1 
+        
+        node = node.right 
+    
+    return 2**c - lastFlag - 1 
+
+root = [1,2,3,4,5,6] 
+root = createBST(root) 
+countNodes(root)
+
+root = [] 
+root = createBST(root) 
+countNodes(root)
+
+root = [1]
+root = createBST(root) 
+countNodes(root)

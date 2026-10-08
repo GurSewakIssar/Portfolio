@@ -1,0 +1,67 @@
+# 52. N-Queens II
+
+# https://leetcode.com/problems/n-queens-ii/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def totalNQueens(n) -> int:
+    
+    temp = [[0]*n for i in range(n)] 
+
+    
+    def setAttacking(r, c, flag): 
+        nonlocal temp, n
+        
+        for i in range(0, n): 
+            if i == c: continue
+            temp[r][i] += flag  
+        
+        for i in range(0, n): 
+            temp[i][c] += flag 
+            
+        rr, cc = r-1, c-1
+        while rr>=0 and cc>=0: 
+            temp[rr][cc] += flag 
+            rr -= 1 
+            cc -= 1 
+            
+        rr, cc = r+1, c+1
+        while rr<n and cc<n: 
+            temp[rr][cc] += flag 
+            rr += 1 
+            cc += 1 
+            
+        rr, cc = r+1, c-1
+        while rr<n and cc>=0: 
+            temp[rr][cc] += flag 
+            rr += 1 
+            cc -= 1  
+            
+        rr, cc = r-1, c+1
+        while rr>=0 and cc<n: 
+            temp[rr][cc] += flag 
+            rr -= 1 
+            cc += 1 
+            
+    result = 0
+    def rec(st): 
+        if st == n: 
+            nonlocal result
+            result += 1
+            return  
+    
+        for i in range(n):
+            nonlocal temp
+            if not temp[st][i]:
+                setAttacking(st, i, 1)
+                rec(st + 1) 
+                setAttacking(st, i,-1)
+    
+    rec(0) 
+    
+    return result
+
+
+n = 4
+totalNQueens(n)
+
+n=5
+totalNQueens(n)

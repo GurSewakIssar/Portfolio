@@ -1,0 +1,32 @@
+# 452. Minimum Number of Arrows to Burst Balloons
+
+# https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/?envType=study-plan-v2&envId=top-interview-150
+
+def findMinArrowShots(points):
+    
+    points = sorted(points) 
+    
+    l = points[0][0]
+    r = points[0][1]
+    result = 0
+    i = 1 
+    
+    for i in range(1, len(points)): 
+        
+        if points[i][0]<=r: 
+            l = max(l, points[i][0]) 
+            r = min(r, points[i][1]) 
+        else: 
+            result += 1
+            l = points[i][0]
+            r = points[i][1] 
+    
+    return result + 1
+
+
+points = [[10,16],[2,8],[1,6],[7,12]]
+findMinArrowShots(points)
+points = [[1,2],[3,4],[5,6],[7,8]]
+findMinArrowShots(points)
+points = [[1,2],[2,3],[3,4],[4,5]]
+findMinArrowShots(points)

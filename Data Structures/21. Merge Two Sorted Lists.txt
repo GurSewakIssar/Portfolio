@@ -1,0 +1,53 @@
+# 21. Merge Two Sorted Lists
+
+# https://leetcode.com/problems/merge-two-sorted-lists/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+def mergeTwoLists(list1, list2):
+    
+    dummy = ListNode(0)
+    cur = dummy 
+    
+    while list1 or list2: 
+        
+        a = list1.val if list1 != None else 101 
+        b = list2.val if list2 != None else 101
+        
+        if a<b: 
+            cur.next = ListNode(a)  
+            list1 = list1.next 
+        else: 
+            cur.next = ListNode(b) 
+            list2 = list2.next 
+        
+        cur = cur.next 
+    
+    return dummy.next
+            
+
+list1 = [1,2,4] 
+list2 = [1,3,4] 
+list1 = CreateLL(list1)
+list2 = CreateLL(list2)
+l3 = mergeTwoLists(list1, list2)
+LL_Iter(l3)

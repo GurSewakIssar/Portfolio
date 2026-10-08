@@ -1,0 +1,58 @@
+# 71. Simplify Path 
+
+# https://leetcode.com/problems/simplify-path/?envType=study-plan-v2&envId=top-interview-150 
+
+def simplifyPath(path):
+    
+    stack = []
+    
+    i = 0 
+    
+    while i < len(path): 
+        
+        if path[i] =="/" and stack and stack[-1] == "/": 
+            pass  
+        elif path[i] == "." and i+2 < len(path) and path[i+2] == "." and path[i+1] == ".": 
+            stack.append('.')
+            stack.append('.') 
+            stack.append('.') 
+            i += 2 
+        
+        elif path[i] == "." and i+1 < len(path) and path[i+1] == ".": 
+            i+=1
+            if stack:
+                stack.pop() 
+                while stack and stack[-1] != "/": 
+                    stack.pop() 
+            
+        elif path[i] == ".":  
+            i+=1
+        
+        else: 
+            stack.append(path[i]) 
+            
+        i += 1 
+    
+    while stack and stack[-1] == "/": 
+        stack.pop() 
+        
+    if not stack: 
+        stack.append("/")
+        
+    return "".join(stack)
+                
+            
+path = "/home/" 
+simplifyPath(path)
+
+path = "/home//foo/"
+simplifyPath(path)
+
+path = "/home/user/Documents/../Pictures"
+simplifyPath(path)
+
+path = "/../"
+simplifyPath(path)
+
+path = "/.../a/../b/c/../d/./"
+simplifyPath(path)

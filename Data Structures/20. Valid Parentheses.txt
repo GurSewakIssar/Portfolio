@@ -1,0 +1,45 @@
+# 20. Valid Parentheses 
+
+# https://leetcode.com/problems/valid-parentheses/?envType=study-plan-v2&envId=top-interview-150 
+s = "([)]" 
+ 
+def isValid(s):
+    
+    d = {
+        "(": ")", 
+        "[": "]", 
+        "{": "}"
+        } 
+    
+    dRev = {
+        ")": "(", 
+        "]": "[", 
+        "}": "{"
+        } 
+    stack = []
+    
+    for i in s: 
+        if i in d: 
+            stack.append(i) 
+        else: 
+            if stack and stack[-1] == dRev[i]: 
+                stack.pop() 
+            else: 
+                return False
+    return not stack
+
+
+s = "()" 
+isValid(s)
+
+s = "()[]{}" 
+isValid(s)
+
+s = "(]"
+isValid(s)
+
+s = "([])" 
+isValid(s)
+
+s = "([)]"
+isValid(s)

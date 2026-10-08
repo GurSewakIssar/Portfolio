@@ -1,0 +1,40 @@
+# 153. Find Minimum in Rotated Sorted Array
+
+# https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/?envType=study-plan-v2&envId=top-interview-150 
+
+def findMin(nums):
+      
+    def findMid(st, end): 
+        return st + (end-st)//2 
+    
+    _min = float("inf")
+    def rec(st, end): 
+        if st>end: return 
+        
+        m = findMid(st, end) 
+        
+        nonlocal _min
+        _min = min(_min, nums[m])
+        if nums[st]<=nums[m]: 
+            _min = min(_min, nums[st])
+            rec(m + 1, end) 
+        else: 
+            rec(st, m-1)
+            
+    rec(0, len(nums)-1) 
+    return _min 
+
+nums = [3,4,5,1,2] 
+findMin(nums)
+
+nums = [4,5,6,7,0,1,2] 
+findMin(nums)
+
+nums = [11,13,15,17]
+findMin(nums)       
+
+nums = [7,9,10,1]
+findMin(nums)  
+
+nums = [7,8,9,0,1,2,3,4]
+findMin(nums) 

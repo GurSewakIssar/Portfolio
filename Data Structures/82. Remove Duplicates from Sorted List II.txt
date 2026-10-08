@@ -1,0 +1,55 @@
+# 82. Remove Duplicates from Sorted List II 
+
+# https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+def deleteDuplicates(head): 
+    
+    cur = head
+    left= head
+    temp = left
+    val = left.val 
+    cur = cur.next 
+    
+    while cur: 
+        while cur and cur.val == val: 
+            cur = cur.next 
+        
+        if cur: 
+            temp.next = cur 
+            temp = temp.next 
+            val = cur.val 
+            cur = cur.next 
+    
+    temp.next = None 
+    return left
+
+head = [1,2,3,3,4,4,5] 
+head = CreateLL(head)
+head = deleteDuplicates(head)
+LL_Iter(head)
+
+head = [1,1,1,2,3]
+head = CreateLL(head)
+head = deleteDuplicates(head)
+LL_Iter(head)

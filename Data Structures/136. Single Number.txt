@@ -1,0 +1,21 @@
+# 136. Single Number
+
+# https://leetcode.com/problems/single-number/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def singleNumber(nums):
+    
+    a = nums[0] 
+    for i in range(1, len(nums)): 
+        a ^= nums[i] 
+    
+    return a
+
+    
+nums = [2,2,1] 
+singleNumber(nums)
+
+nums = [4,1,2,1,2] 
+singleNumber(nums)
+
+nums = [1] 
+singleNumber(nums)

@@ -1,0 +1,27 @@
+# 226. Invert Binary Tree
+
+# https://leetcode.com/problems/invert-binary-tree/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def invertTree(root): 
+    
+    def rec(node): 
+        if not node: return None 
+        
+        left = rec(node.left) 
+        right = rec(node.right) 
+        
+        node.right = left 
+        node.left = right 
+        
+        return node
+        
+    return rec(root)
+
+root = [4,2,7,1,3,6,9]
+invertTree(root)
+
+root = [2,1,3]
+invertTree(root)
+
+root = []
+invertTree(root)

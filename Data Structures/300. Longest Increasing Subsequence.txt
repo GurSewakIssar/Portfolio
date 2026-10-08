@@ -1,0 +1,39 @@
+# 300. Longest Increasing Subsequence
+
+# https://leetcode.com/problems/longest-increasing-subsequence/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def lengthOfLIS(nums):
+    
+    def search(li, v):
+        def mid(st, end): 
+            return st + (end-st)//2
+        def rec(st, end, v):
+            if st>end:return st
+            
+            m = mid(st, end) 
+            nonlocal li 
+            
+            if li[m]>v: return rec(st, m-1, v) 
+            else: return rec(m+1, end, v) 
+            
+        return rec(0, len(li)-1, v)  
+    
+    result = []
+    for i in nums: 
+        if not result: result.append(i) 
+        elif i>result[-1]: result.append(i) 
+        
+        else:
+            m = search(result,i) 
+            result[min(m, len(result)-1)] = i 
+    
+    return len(result)
+
+nums = [10,9,2,5,3,7,101,18]
+lengthOfLIS(nums)
+
+nums = [0,1,0,3,2,3] 
+lengthOfLIS(nums)
+
+nums = [7,7,7,7,7,7,7]
+lengthOfLIS(nums) 

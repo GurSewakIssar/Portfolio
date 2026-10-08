@@ -1,0 +1,73 @@
+# 146. LRU Cache
+
+# https://leetcode.com/problems/lru-cache/?envType=study-plan-v2&envId=top-interview-150  
+
+class DLL: 
+    def __init__(self, val = 0, prev = None, next_ = None): 
+        
+        self.val = val 
+        self.next = next_ 
+        self.prev = prev
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.capacity = capacity 
+        self.DLL = DLL()  
+        self.cur = self.DLL
+        self.dict = {}
+        self.nodeDict = {}
+        
+
+    def get(self, key: int):
+        if key in self.dict: 
+            node = self.dict[key]  
+            if node == self.cur: return self.cur.val
+            node.prev.next = node.next 
+            node.next.prev = node.prev
+            node.prev = self.cur
+            node.next = None
+            self.cur.next = node 
+            self.cur = self.cur.next
+            return self.dict[key].val
+            
+        else: 
+            return -1
+        
+
+    def put(self, key: int, value: int): 
+        
+        if len(self.dict)<self.capacity:
+            node = DLL(value, self.cur) 
+            self.nodeDict[node] = key
+            self.dict[key] = node
+            self.cur.next = node 
+            self.cur = self.cur.next 
+        
+        else: 
+            node = self.DLL.next 
+            print(node.val)
+            idx = self.nodeDict[node] 
+            del self.nodeDict[node] 
+            del self.dict[idx]  
+            node.next.prev = node.prev
+            node.prev.next = node.next 
+            
+            node = DLL(value, self.cur) 
+            self.cur.next = node 
+            self.cur = self.cur.next 
+            
+            self.nodeDict[node] = key  
+            self.dict[key] = node
+            
+
+lRUCache = LRUCache(2)
+lRUCache.put(1, 1)
+lRUCache.put(2, 2)
+lRUCache.get(1)
+lRUCache.put(3, 3)
+lRUCache.get(2)
+lRUCache.put(4, 4)
+lRUCache.get(1)
+lRUCache.get(3)
+lRUCache.get(4)

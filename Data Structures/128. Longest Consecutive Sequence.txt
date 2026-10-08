@@ -1,0 +1,40 @@
+# 128. Longest Consecutive Sequence 
+
+# https://leetcode.com/problems/longest-consecutive-sequence/?envType=study-plan-v2&envId=top-interview-150 
+
+def longestConsecutive(nums):
+    
+    d = set()
+    D = {} 
+    
+    for i in range(len(nums)): 
+        d.add(nums[i])  
+        
+    result = 0
+    
+    for i in d: 
+        k = i
+        temp = 0 
+        
+        if k-1 in D:
+            D[i] = D[k-1] + 1  
+        else:
+            while k-1 in d: 
+                temp += 1 
+                k-=1 
+            
+            D[i] = temp + 1 
+            
+        result = max(result, D[i])  
+    
+    return result
+        
+
+nums = [100,4,200,1,3,2] 
+longestConsecutive(nums)
+
+nums = [0,3,7,2,5,8,4,6,0,1]
+longestConsecutive(nums)
+
+nums = [1,0,1,2]
+longestConsecutive(nums)

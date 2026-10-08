@@ -1,0 +1,21 @@
+# 191. Number of 1 Bits
+
+# https://leetcode.com/problems/number-of-1-bits/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def hammingWeight(n):
+    c = 0 
+    while n: 
+        c += (n&1) 
+        n >>= 1 
+    
+    return c
+    
+
+n = 11 
+hammingWeight(n)
+
+n = 128
+hammingWeight(n)
+
+n = 7 
+hammingWeight(n)

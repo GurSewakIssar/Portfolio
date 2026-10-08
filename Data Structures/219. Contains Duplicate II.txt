@@ -1,0 +1,34 @@
+# 219. Contains Duplicate II 
+
+# https://leetcode.com/problems/contains-duplicate-ii/?envType=study-plan-v2&envId=top-interview-150 
+
+def containsNearbyDuplicate(nums, k): 
+    
+    D = {}
+    d = set() 
+    
+    for i in range(len(nums)): 
+        
+        if nums[i] in d: return True
+
+        D[i] = nums[i] 
+        d.add(nums[i]) 
+        
+        if len(d) == k+1: 
+            d.remove(D[i-k])
+            del D[i-k] 
+        
+    return False
+    
+
+nums = [1,2,3,1] 
+k = 3
+containsNearbyDuplicate(nums, k)
+
+nums = [1,0,1,1] 
+k = 1 
+containsNearbyDuplicate(nums, k)
+
+nums = [1,2,3,1,2,3] 
+k = 2
+containsNearbyDuplicate(nums, k) 

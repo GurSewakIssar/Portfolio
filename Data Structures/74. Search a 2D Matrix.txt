@@ -1,0 +1,36 @@
+# 74. Search a 2D Matrix 
+
+# https://leetcode.com/problems/search-a-2d-matrix/?envType=study-plan-v2&envId=top-interview-150 
+
+def searchMatrix(matrix, target):
+    r = len(matrix) 
+    c = len(matrix[0])
+    
+    def FindMid(st, end): 
+        m = end-st
+        m = st + m // 2 
+        row = m//c 
+        col = m - (row*c) 
+        return row,col
+    
+    def rec(st, end): 
+        if st>end: return False  
+        
+        row, col = FindMid(st, end)  
+        if matrix[row][col] == target: return True 
+        
+        return rec(row*c + col + 1, end) if matrix[row][col] < target else rec(st, row*c + col - 1)  
+    
+    return rec(0, r * c - 1)
+    
+matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]] 
+target = 3 
+searchMatrix(matrix, target)
+
+matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]] 
+target = 13
+searchMatrix(matrix, target)       
+        
+matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]] 
+target = 16
+searchMatrix(matrix, target) 

@@ -1,0 +1,86 @@
+# 102. Binary Tree Level Order Traversal
+
+# https://leetcode.com/problems/binary-tree-level-order-traversal/?envType=study-plan-v2&envId=top-interview-150 
+
+class TreeNode: 
+    def __init__(self, val): 
+        self.val = val 
+        self.left = None 
+        self.right = None 
+null = None
+
+def createBST(vals): 
+    if not vals: return None
+    i = 0 
+    tree = TreeNode(vals[0])
+    temp = [tree]
+    
+    while i < len(vals): 
+        t = []
+        
+        for v in temp: 
+            if v != null:
+                if i*2 + 1 < len(vals):
+                    
+                    if vals[i*2 + 1] != null:
+                        left = TreeNode(vals[i*2 + 1]) 
+                    else: 
+                        left = vals[i*2 + 1]
+                    t.append(left)  
+                    v.left = left
+                    
+                    if i*2 + 2 < len(vals):
+                        if vals[i*2 + 2] != null: 
+                            right = TreeNode(vals[i*2 + 2]) 
+                        else: 
+                            right = vals[i*2 + 2]
+                        t.append(right) 
+                        v.right = right 
+            else: 
+                t.append(null) 
+                t.append(null)
+                    
+            i += 1 
+        
+        temp = t 
+        
+    return tree
+
+
+
+def levelOrder(root):
+    if not root: return []
+    result = [] 
+
+    li = [root] 
+    
+    while li: 
+        liv = []
+        temp = [] 
+        
+        for i in li: 
+            liv.append(i.val) 
+            
+            if i.left: 
+                temp.append(i.left) 
+                
+            if i.right: 
+                temp.append(i.right) 
+                
+        result.append(liv)
+        li = temp 
+    
+    return result 
+
+
+root = [3,9,20,null,null,15,7]
+root = createBST(root)
+levelOrder(root) 
+
+root = [1] 
+root = createBST(root)
+levelOrder(root) 
+
+root = []
+root = createBST(root)
+levelOrder(root) 

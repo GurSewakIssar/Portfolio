@@ -1,0 +1,68 @@
+# 114. Flatten Binary Tree to Linked List
+
+# https://leetcode.com/problems/flatten-binary-tree-to-linked-list/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+
+# inplace
+def flatten(root):
+    
+    if not root: return None 
+    
+    def rec(node): 
+        if not node: return None 
+        
+        left =  rec(node.left)
+        right = rec(node.right) 
+        
+        if left:
+            left.right = right
+            left.left = None 
+        
+        if right:
+            right.left = None 
+        
+        node.right = node.left
+        node.left = None 
+        
+        return right or left or node 
+
+    return root 
+
+
+# needs dummy LL 
+
+def flatten(root): 
+    if not root: return 
+    dummy = ListNode(0)
+    cur = dummy
+    def rec(node): 
+        if not node: return None 
+        nonlocal cur
+        cur.next = ListNode(node.val) 
+        cur = cur.next
+        
+        rec(node.left) 
+        rec(node.right)  
+         
+    rec(root)
+    return dummy.next
+        
+        
+        
+        
+        
+
+
+root = [1,2,5,3,4,null,6] 
+root = flatten(root)
+
+root = [] 
+root = flatten(root)
+
+root = [0]
+root = flatten(root)

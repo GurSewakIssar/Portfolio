@@ -1,0 +1,32 @@
+# 50. Pow(x, n)
+
+# https://leetcode.com/problems/powx-n/?envType=study-plan-v2&envId=top-interview-150 
+
+def myPow(x, n):
+    def rec(x, n): 
+        if x == 0: return 0
+        if n == 0: return 1  
+        
+        r = rec(x, n//2) 
+        r *= r 
+        
+        if n%2: 
+            r *= x
+        
+        return r  
+    
+    result = rec(x, n if n>=0 else -n)  
+    
+    return result if n>= 0 else 1/result
+
+x = 2.00000 
+n = 10 
+myPow(x, n)
+
+x = 2.10000 
+n = 3 
+myPow(x, n)
+
+x = 2.00000 
+n = -2 
+myPow(x, n) 

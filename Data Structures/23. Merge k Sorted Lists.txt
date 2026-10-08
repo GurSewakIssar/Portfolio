@@ -1,0 +1,79 @@
+# 23. Merge k Sorted Lists
+
+# https://leetcode.com/problems/merge-k-sorted-lists/?envType=study-plan-v2&envId=top-interview-150
+
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+
+
+def mergeKLists(lists):
+
+    if lists == [] or lists[0] == []: return []
+    
+    def findMid(li): 
+        return len(li)//2
+    
+    def rec(li): 
+        if li == []: return None 
+        elif len(li) == 1: return li[0]   
+        
+        m = findMid(li) 
+        
+        left = rec(li[:m])
+        right = rec(li[m:]) 
+        
+        dummy = ListNode(0) 
+        temp = dummy
+        while left or right: 
+            lv = left.val if left else float("inf") 
+            rv = right.val if right else float('inf') 
+            
+            if lv < rv : 
+                temp.next = left 
+                left = left.next 
+                temp = temp.next
+            else: 
+                temp.next = right 
+                right = right.next 
+                temp = temp.next 
+        
+        return dummy.next 
+    
+    return rec(lists)
+
+def createListedLL(lists): 
+    temp = [] 
+    for i in lists: 
+        temp.append(CreateLL(i)) 
+    return temp
+        
+lists = [[1,4,5],[1,3,4],[2,6]] 
+lists = createListedLL(lists)
+head = mergeKLists(lists) 
+LL_Iter(head) 
+
+lists = [] 
+lists = createListedLL(lists)
+
+lists = [[]]
+lists = createListedLL(lists)  

@@ -1,0 +1,57 @@
+# 97. Interleaving String
+
+# https://leetcode.com/problems/interleaving-string/?envType=study-plan-v2&envId=top-interview-150 
+
+def isInterleave(s1, s2, s3): 
+    if len(s1)>len(s2): 
+        s1,s2 = s2, s1
+        
+    A1 = [False] * (len(s1)+1)
+    A1[0] = True 
+    
+    for i in range(len(s1)): 
+        if s1[i] == s3[i] and A1[i]: 
+            A1[i+1] = True 
+            
+    temp = [False] * (len(s1) + 1) 
+    A2 = temp.copy()
+    
+    for r in range(len(s2)): 
+        for c in range(len(s1)):
+            if c==0:
+                if A1[0] and s2[r] == s3[r]: 
+                    A2[0] = True 
+            
+            # up is True
+            if A1[c+1] and s2[r] == s3[r+c+1]:
+                A2[c+1] = True
+            
+            # left is True
+            elif A2[c] and s1[c] == s3[r+c+1]: 
+                A2[c+1] = True 
+                 
+        
+        A1 = A2.copy() 
+        A2 = temp.copy() 
+    
+    return A1[-1] 
+
+s1 = "aabcc" 
+s2 = "dbbca" 
+s3 = "aadbbcbcac" 
+isInterleave(s1, s2, s3)
+
+s1 = "aabcc" 
+s2 = "dbbca" 
+s3 = "aadbbbaccc" 
+isInterleave(s1, s2, s3)
+
+s1 = "" 
+s2 = "" 
+s3 = ""
+isInterleave(s1, s2, s3)
+
+s1 = "1357" 
+s2 = "246" 
+s3 = "1234567" 
+isInterleave(s1, s2, s3)

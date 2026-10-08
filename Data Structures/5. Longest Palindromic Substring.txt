@@ -1,0 +1,32 @@
+# 5. Longest Palindromic Substring 
+
+# https://leetcode.com/problems/longest-palindromic-substring/?envType=study-plan-v2&envId=top-interview-150 
+
+def longestPalindrome(s):
+    
+    def find(l,r): 
+        mx = 0
+        while l>=0 and r<len(s) and s[l]==s[r]: 
+            mx = r-l
+            l -= 1 
+            r += 1
+        
+        return mx+1 
+    
+    mx = 0
+    for i in range(len(s)): 
+        even = find(i,i) 
+        odd = find(i, i+1) 
+        
+        mx = max(even, odd, mx) 
+    
+    return mx
+
+s = "babad" 
+longestPalindrome(s)
+
+s = "cbbd"
+longestPalindrome(s)  
+        
+s = "oddo" 
+longestPalindrome(s)

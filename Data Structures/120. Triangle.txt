@@ -1,0 +1,18 @@
+# 120. Triangle
+
+# https://leetcode.com/problems/triangle/?envType=study-plan-v2&envId=top-interview-150 
+
+def minimumTotal(triangle):
+    temp = triangle[-1] 
+    
+    for i in range(len(triangle)-2, -1, -1): 
+        for idx in range(len(triangle[i])) :
+            temp[idx] = min(temp[idx+1],temp[idx]) + triangle[i][idx]
+    
+    return temp[0]
+
+triangle = [[2],[3,4],[6,5,7],[4,1,8,3]] 
+minimumTotal(triangle)
+
+triangle = [[-10]]
+minimumTotal(triangle)  

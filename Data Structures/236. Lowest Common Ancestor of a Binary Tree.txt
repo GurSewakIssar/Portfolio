@@ -1,0 +1,79 @@
+# 236. Lowest Common Ancestor of a Binary Tree
+
+# https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/?envType=study-plan-v2&envId=top-interview-150 
+
+class TreeNode: 
+    def __init__(self, val): 
+        self.val = val 
+        self.left = None 
+        self.right = None 
+null = None
+
+def createBST(vals): 
+    if not vals: return None
+    i = 0 
+    tree = TreeNode(vals[0])
+    temp = [tree]
+    
+    while i < len(vals): 
+        t = []
+        
+        for v in temp: 
+            if v != null:
+                if i*2 + 1 < len(vals):
+                    
+                    if vals[i*2 + 1] != null:
+                        left = TreeNode(vals[i*2 + 1]) 
+                    else: 
+                        left = vals[i*2 + 1]
+                    t.append(left)  
+                    v.left = left
+                    
+                    if i*2 + 2 < len(vals):
+                        if vals[i*2 + 2] != null: 
+                            right = TreeNode(vals[i*2 + 2]) 
+                        else: 
+                            right = vals[i*2 + 2]
+                        t.append(right) 
+                        v.right = right 
+            else: 
+                t.append(null) 
+                t.append(null)
+                    
+            i += 1 
+        
+        temp = t 
+        
+    return tree
+
+
+
+def lowestCommonAncestor(root, p, q):
+    
+    result = None
+    def rec(node, l, r): 
+        if not node: 
+            return l,r
+
+        ll,lr = rec(node.left, l, r) 
+        rl,rr = rec(node.right, l, l) 
+        
+        l = ll or rl or node.val == p 
+        r = lr or rr or node.val == q 
+        
+
+        nonlocal result
+        if result == None:
+            if l and r: 
+                result = node.val
+            
+        return l,r
+    
+    _,__ = rec(root, False, False) 
+    return result
+
+root = [3,5,1,6,2,0,8,null,null,7,4] 
+root = createBST(root)
+p = 5 
+q = 1 
+lowestCommonAncestor(root, p, q)

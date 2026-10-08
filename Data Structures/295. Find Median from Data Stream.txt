@@ -1,0 +1,49 @@
+# 295. Find Median from Data Stream
+
+# https://leetcode.com/problems/find-median-from-data-stream/?envType=study-plan-v2&envId=top-interview-150
+
+import heapq
+class MedianFinder:
+    
+    def __init__(self):
+        
+        
+        self.l1 = [] 
+        self.l2 = [] 
+        
+        
+
+    def addNum(self, num: int) -> None:
+        
+        
+        if len(self.l2)<len(self.l1): 
+            if -num<self.l1[0]: 
+                heapq.heappush(self.l2, num) 
+            else: 
+                pop = heapq.heappop(self.l1) 
+                heapq.heappush(self.l1, -num) 
+                heapq.heappush(self.l2, -pop) 
+        else: 
+            
+            if self.l2 and num>self.l2[0]: 
+                pop = heapq.heappop(self.l2) 
+                heapq.heappush(self.l2, num) 
+                heapq.heappush(self.l1, -pop) 
+            else: 
+                heapq.heappush(self.l1, -num) 
+                
+
+
+    def findMedian(self) -> float:
+        
+        if not (len(self.l1) + len(self.l2))%2: 
+            return ((-self.l1[0]) + self.l2[0])/2 
+        else: 
+            return -self.l1[0] 
+
+medianFinder = MedianFinder()
+medianFinder.addNum(1) # arr = [1]
+medianFinder.addNum(2)#    // arr = [1, 2]
+medianFinder.findMedian()# // return 1.5 (i.e., (1 + 2) / 2)
+medianFinder.addNum(3)#    // arr[1, 2, 3]
+medianFinder.findMedian()# // return 2.0

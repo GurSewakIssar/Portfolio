@@ -1,0 +1,81 @@
+# 61. Rotate List
+
+# https://leetcode.com/problems/rotate-list/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def CreateLL(vals): 
+    dummy = ListNode(0)
+    cur = dummy
+    
+    for val in vals: 
+        cur.next = ListNode(val) 
+        cur = cur.next 
+    
+    return dummy.next
+
+def LL_Iter(l): 
+    cur = l
+    while cur: 
+        print(cur.val) 
+        cur = cur.next
+
+def rotateRight(head, k):
+    
+    def reverse(cur, start, end): 
+        i = start
+        temp = cur 
+        i+= 1 
+        prev = temp 
+        temp = temp.next
+        
+        while i <= end:
+            nxt = temp.next
+            temp.next = prev 
+            prev = temp
+            temp = nxt 
+            i += 1 
+        
+        cur.next = None
+        
+        return prev, cur, temp # head, tail, next 
+    
+    K = 0 
+    cur = head
+    while cur: 
+        K += 1 
+        cur = cur.next 
+    
+    head, _, _ = reverse(head, 1, K)  
+    
+    k = k % K 
+    
+    left, left_tail, nxt = reverse(head, 1, k) 
+    right, right_tail, _ = reverse(nxt, k+1, K) 
+    
+    left_tail.next = right  
+     
+    return left
+    
+    
+head = [1,2,3,4,5] 
+k = 2 
+head = CreateLL(head)
+head = rotateRight(head, k)
+LL_Iter(head)
+
+
+head = [0,1,2] 
+k = 4
+head = CreateLL(head)
+head = rotateRight(head, k)
+LL_Iter(head)
+
+head = [1,2,3,4,5,6,7] 
+k = 10
+head = CreateLL(head)
+head = rotateRight(head, k)
+LL_Iter(head)

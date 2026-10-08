@@ -1,0 +1,65 @@
+# 101. Symmetric Tree 
+
+# https://leetcode.com/problems/symmetric-tree/?envType=study-plan-v2&envId=top-interview-150
+          
+# recursive approach  
+def isSymmetric(root): 
+    if not root: return False 
+    
+    def rec(left, right):
+        if not left and not right: return True 
+        elif not left and right: return False 
+        elif left and not right: return False 
+        
+        if left.val == right.val:
+            left = rec(left.left, right.right) 
+            right = rec(left.right, right.left)  
+        else: 
+            return False 
+        
+        return True and left and right 
+    
+    return rec(root.left, root.right) 
+
+def isSymmetric(root): 
+    if not root: return False 
+    
+    left = [root.left] 
+    right = [root.right] 
+    
+    while left and right: 
+        
+        if len(left) != len(right): return False 
+        
+        templ, tempr = [], [0]*len(left)
+        
+        for i in range(len(left)):  
+            r = len(left) - i - 1
+            if left[i].val != right[r].val: 
+                return False 
+            else: 
+                if left[i].left:
+                    templ.append(left[i].left)
+                if left[i].right:
+                    templ.append(left[i].right) 
+                
+                j = r*2
+                if right[r].left:
+                    tempr[j] = right[r].left
+                if right[r].right:
+                    tempr[j+1] = right[r].right  
+                
+        left = templ 
+        right = tempr
+                 
+    return True
+                
+            
+    
+    
+
+root = [1,2,2,3,4,4,3] 
+isSymmetric(root)
+
+root = [1,2,2,null,3,null,3] 
+isSymmetric(root) 

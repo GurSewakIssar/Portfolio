@@ -1,0 +1,24 @@
+# 137. Single Number II
+
+# https://leetcode.com/problems/single-number-ii/description/?envType=study-plan-v2&envId=top-interview-150
+
+def singleNumber(nums):
+    
+    res = 0 
+    
+    for i in range(32):
+        c = 0
+        for n in range(len(nums)): 
+            if n<0: 
+                n = n & (2**32-1)
+            c += ((nums[n]>>i)&1) 
+        
+        res |= (c%3) << i
+    
+    return res - 2 ** 32 if res>=2**31 else res
+
+nums = [2,2,-3,2] 
+singleNumber(nums)
+
+nums = [0,1,0,1,0,1,99]
+singleNumber(nums) 

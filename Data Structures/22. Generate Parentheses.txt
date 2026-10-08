@@ -1,0 +1,31 @@
+# 22. Generate Parentheses
+
+# https://leetcode.com/problems/generate-parentheses/?envType=study-plan-v2&envId=top-interview-150 
+
+def generateParenthesis(n):
+    result = [] 
+    
+    def rec(o,c,s): 
+        if o == n and c == n: 
+            nonlocal result 
+            result.append(s) 
+            return 
+        if o>n or c>o: return
+        
+        rec(o+1, c, s + '(') 
+        rec(o, c+1, s + ')')  
+    
+    rec(0,0,'') 
+    return result 
+
+n = 3
+generateParenthesis(n)
+
+n = 2
+generateParenthesis(n) 
+
+n = 1 
+generateParenthesis(n)
+
+n = 4 
+generateParenthesis(n) 

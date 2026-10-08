@@ -1,0 +1,44 @@
+# 141. Linked List Cycle
+
+# https://leetcode.com/problems/linked-list-cycle/?envType=study-plan-v2&envId=top-interview-150 
+
+class ListNode: 
+    def __init__(self, val): 
+        self.val = val
+        self.next = None
+
+def hasCycle(head): 
+    
+    l = head 
+    r = head
+    
+    while l and r: 
+        if r.next != None and r.next.next != None: 
+            r = r.next.next 
+        else: 
+            return False 
+        
+        l = l.next 
+        if l == r: 
+            return True 
+
+
+def createCyclinLL(head, pos):  
+    dummy = ListNode(0)
+    ll = dummy
+    for idx,i in enumerate(head): 
+        node = ListNode(i)
+        if idx == pos: 
+            save = node
+        ll.next = node 
+        ll = ll.next 
+    
+    if pos>=0: 
+        ll.next = save 
+    
+    return dummy.next
+    
+head = [3,2,0,-4] 
+pos = 1 
+head = createCyclinLL(head, pos)
+hasCycle(head)

@@ -1,0 +1,21 @@
+# 70. Climbing Stairs
+
+# https://leetcode.com/problems/climbing-stairs/?envType=study-plan-v2&envId=top-interview-150 
+
+def climbStairs(n):
+    if n<=2: return n 
+    a = 1 
+    b = 2 
+    
+    for i in range(2, n): 
+        a, b = b, a+b 
+    return b 
+
+n = 2 
+climbStairs(n)
+
+n = 3 
+climbStairs(n)
+
+n = 5
+climbStairs(n)

@@ -1,0 +1,51 @@
+# 106. Construct Binary Tree from Inorder and Postorder Traversal 
+
+# https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/?envType=study-plan-v2&envId=top-interview-150 
+
+class TreeNode: 
+    def __init__(self, val): 
+        self.val = val 
+        self.left = None 
+        self.right = None 
+null = None
+
+def buildTree(inorder, postorder):
+    
+    if not inorder: return
+    
+    def find(li, v): 
+        for i, val in enumerate(li): 
+            if val == v: 
+                return i
+    
+    def rec(ino, po): 
+        if not len(ino): return None 
+        elif len(ino) == 1:  
+            return TreeNode(ino[0])  
+        
+        node = TreeNode(po[-1])
+        I = find(ino, po[-1])  
+        
+        if I: 
+            J = find(po, ino[I-1])  
+            left = rec(ino[:I], po[:J+1]) 
+            if I == len(ino)-1: 
+                right = None  
+            else: 
+                right = rec(ino[I+1:], po[J+1:-1]) 
+            
+        else: 
+            left = None
+            right = rec(ino[I+1:], po[:-1]) 
+ 
+        node.left = left 
+        node.right = right 
+        
+        return node 
+    
+    return rec(inorder, postorder)
+            
+        
+inorder = [9,3,15,20,7] 
+postorder = [9,15,7,20,3] 
+root = buildTree(inorder, postorder)

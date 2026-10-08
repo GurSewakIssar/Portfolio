@@ -1,0 +1,37 @@
+# 215. Kth Largest Element in an Array
+
+# https://leetcode.com/problems/kth-largest-element-in-an-array/?envType=study-plan-v2&envId=top-interview-150
+
+# space comp = N, Time comp = nlogk
+def findKthLargest(nums, k): 
+    
+    import heapq 
+    nums = [-i for i in nums]
+    heapq.heapify(nums) 
+    
+    for i in range(k): 
+        pop = heapq.heappop(nums) 
+    
+    return -pop
+
+#space comp = K, TIme Comp = nlogk
+def findKthLargest(nums, k): 
+    
+    import heapq 
+    heap = nums[:k]
+    heapq.heapify(heap) 
+    
+    for i in nums[k:]: 
+        if i > heap[0]:
+            heapq.heappop(heap)
+            heapq.heappush(heap,i) 
+    
+    return heap[0]
+
+nums = [3,2,1,5,6,4] 
+k = 2
+findKthLargest(nums, k)
+
+nums = [3,2,3,1,2,4,5,5,6]
+k = 4
+findKthLargest(nums, k)

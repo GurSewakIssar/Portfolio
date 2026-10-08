@@ -1,0 +1,23 @@
+# 77. Combinations
+
+# https://leetcode.com/problems/combinations/description/?envType=study-plan-v2&envId=top-interview-150 
+
+def combine(n, k):
+    result = []
+    def rec(li, st): 
+        if len(li) == k:
+            nonlocal result 
+            result.append(li) 
+        
+        for i in range(st, n+1): 
+            rec(li + [i], i + 1) 
+    rec([], 1)
+    return result
+
+n = 4 
+k = 2
+combine(n, k)
+
+n = 1 
+k = 1
+combine(n, k)

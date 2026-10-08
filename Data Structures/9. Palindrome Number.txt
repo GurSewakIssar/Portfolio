@@ -1,0 +1,31 @@
+# 9. Palindrome Number
+
+# https://leetcode.com/problems/palindrome-number/?envType=study-plan-v2&envId=top-interview-150 
+
+def isPalindrome(x): 
+    orig = x
+    if x < 0: return False 
+    
+    rev = 0  
+    
+    while x: 
+        Mod = x % 10 
+        x = x // 10 
+        rev = (rev * 10) + Mod 
+    
+    return orig == rev 
+
+x = 121 
+isPalindrome(x)
+
+x = -121 
+isPalindrome(x)
+
+x = 10
+isPalindrome(x)
+
+x = 1441 
+isPalindrome(x)
+
+x = 123221 
+isPalindrome(x)
